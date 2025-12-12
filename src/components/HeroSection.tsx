@@ -9,102 +9,116 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Floating 3D Shape */}
-      <FloatingShape />
-      
+    <section id="hero" className="relative h-screen flex items-center overflow-hidden">
       {/* Scan line effect */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-20">
         <div className="absolute w-full h-[2px] bg-gradient-to-r from-transparent via-foreground/20 to-transparent animate-line-scan" />
       </div>
       
-      {/* Content */}
-      <div className="relative z-10 container mx-auto px-6 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-          className="max-w-5xl mx-auto"
-        >
-          {/* Status Badge */}
+      {/* Content Grid - Text Left, 3D Right */}
+      <div className="relative z-10 container mx-auto px-6 h-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center h-full pt-24">
+          {/* Left Side - Text Content */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.6 }}
-            className="inline-flex items-center gap-3 glass-card rounded-full px-5 py-2 mb-12"
+            initial={{ opacity: 0, x: -60 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+            className="text-left"
           >
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-foreground animate-pulse" />
-              <span className="text-xs font-mono uppercase tracking-widest text-muted-foreground">Now Available</span>
-            </div>
-            <div className="w-px h-4 bg-border" />
-            <span className="text-xs font-mono uppercase tracking-widest">v1.0</span>
-          </motion.div>
-
-          {/* Headline */}
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.8 }}
-            className="text-5xl md:text-7xl lg:text-[6rem] font-display font-bold leading-[0.95] mb-8 tracking-tight"
-          >
-            <span className="block text-foreground">CONTROL</span>
-            <span className="block text-foreground">THE WEB</span>
-            <span className="block gradient-text">WITH YOUR HANDS</span>
-          </motion.h1>
-
-          {/* Subheadline */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.8 }}
-            className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto mb-12 font-mono leading-relaxed"
-          >
-            Revolutionary gesture-controlled 3D components. 
-            No hardware required. Just your webcam.
-          </motion.p>
-
-          {/* CTA Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7, duration: 0.8 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center"
-          >
-            <Button
-              variant="default"
-              size="xl"
-              onClick={scrollToDemo}
-              className="group"
+            {/* Status Badge */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.6 }}
+              className="inline-flex items-center gap-3 glass-card rounded-full px-5 py-2 mb-8"
             >
-              <Zap className="w-4 h-4" />
-              Try Demo
-              <ArrowDown className="w-4 h-4 group-hover:translate-y-1 transition-transform" />
-            </Button>
-            <Button variant="outline" size="xl">
-              Documentation
-            </Button>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-foreground animate-pulse" />
+                <span className="text-xs font-mono uppercase tracking-widest text-muted-foreground">Now Available</span>
+              </div>
+              <div className="w-px h-4 bg-border" />
+              <span className="text-xs font-mono uppercase tracking-widest">v1.0</span>
+            </motion.div>
+
+            {/* Headline */}
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.8 }}
+              className="text-4xl md:text-6xl lg:text-7xl xl:text-[5.5rem] font-display font-bold leading-[0.95] mb-6 tracking-tight"
+            >
+              <span className="block text-foreground">CONTROL</span>
+              <span className="block text-foreground">THE WEB</span>
+              <span className="block gradient-text">WITH YOUR HANDS</span>
+            </motion.h1>
+
+            {/* Subheadline */}
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.8 }}
+              className="text-base md:text-lg text-muted-foreground max-w-lg mb-10 font-mono leading-relaxed"
+            >
+              Revolutionary gesture-controlled 3D components. 
+              No hardware required. Just your webcam.
+            </motion.p>
+
+            {/* CTA Buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.7, duration: 0.8 }}
+              className="flex flex-col sm:flex-row gap-4"
+            >
+              <Button
+                variant="default"
+                size="xl"
+                onClick={scrollToDemo}
+                className="group"
+              >
+                <Zap className="w-4 h-4" />
+                Try Demo
+                <ArrowDown className="w-4 h-4 group-hover:translate-y-1 transition-transform" />
+              </Button>
+              <Button variant="outline" size="xl">
+                Documentation
+              </Button>
+            </motion.div>
+
+            {/* Stats */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1, duration: 0.8 }}
+              className="flex gap-12 mt-16"
+            >
+              {[
+                { value: '60', label: 'FPS' },
+                { value: '<3s', label: 'Load Time' },
+                { value: '99%', label: 'Accuracy' },
+              ].map((stat) => (
+                <div key={stat.label} className="text-left">
+                  <div className="text-2xl md:text-3xl font-display font-bold text-foreground">{stat.value}</div>
+                  <div className="text-xs font-mono uppercase tracking-widest text-muted-foreground mt-1">{stat.label}</div>
+                </div>
+              ))}
+            </motion.div>
           </motion.div>
 
-          {/* Stats */}
+          {/* Right Side - 3D Model */}
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1, duration: 0.8 }}
-            className="flex justify-center gap-12 mt-20"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.4, duration: 1, ease: [0.16, 1, 0.3, 1] }}
+            className="relative h-[500px] lg:h-[600px] flex items-center justify-center"
           >
-            {[
-              { value: '60', label: 'FPS' },
-              { value: '<3s', label: 'Load Time' },
-              { value: '99%', label: 'Accuracy' },
-            ].map((stat) => (
-              <div key={stat.label} className="text-center">
-                <div className="text-2xl md:text-3xl font-display font-bold text-foreground">{stat.value}</div>
-                <div className="text-xs font-mono uppercase tracking-widest text-muted-foreground mt-1">{stat.label}</div>
-              </div>
-            ))}
+            <FloatingShape />
+            
+            {/* Decorative Elements */}
+            <div className="absolute top-1/4 right-0 w-32 h-32 border border-foreground/10 rounded-full animate-pulse-subtle" />
+            <div className="absolute bottom-1/4 left-0 w-24 h-24 border border-foreground/5 rounded-full animate-pulse-subtle" style={{ animationDelay: '1s' }} />
           </motion.div>
-        </motion.div>
+        </div>
 
         {/* Scroll indicator */}
         <motion.div
@@ -128,7 +142,7 @@ const HeroSection = () => {
       </div>
 
       {/* Gradient overlay at bottom */}
-      <div className="absolute bottom-0 left-0 right-0 h-60 bg-gradient-to-t from-background to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-60 bg-gradient-to-t from-background to-transparent z-10" />
     </section>
   );
 };

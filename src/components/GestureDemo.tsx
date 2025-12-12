@@ -14,16 +14,43 @@ interface GestureState {
   confidence: number;
 }
 
+// Coca-Cola Can Model - responds to gestures
+const CocaColaProduct = ({ rotation, zoom }: { rotation: { x: number; y: number }; zoom: number }) => {
+  const groupRef = useRef<THREE.Group>(null);
+  const { scene } = useGLTF('https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/can-coca-cola/model.gltf');
+
+  useFrame(() => {
+    if (groupRef.current) {
+      // Much faster rotation - increased multiplier from 0.02 to 0.08
+      const targetX = rotation.x * 0.08;
+      const targetY = rotation.y * 0.08;
+      // Faster lerp from 0.08 to 0.15
+      groupRef.current.rotation.x += (targetX - groupRef.current.rotation.x) * 0.15;
+      groupRef.current.rotation.y += (targetY - groupRef.current.rotation.y) * 0.15;
+    }
+  });
+
+  return (
+    <Float speed={1.2} rotationIntensity={0.1} floatIntensity={0.3}>
+      <group ref={groupRef} scale={zoom * 10} position={[0, -0.5, 0]}>
+        <primitive object={scene.clone()} />
+      </group>
+    </Float>
+  );
+};
+
 // Fallback 3D Product - Geometric Abstract Shape
 const AbstractProduct = ({ rotation, zoom }: { rotation: { x: number; y: number }; zoom: number }) => {
   const groupRef = useRef<THREE.Group>(null);
 
   useFrame((state) => {
     if (groupRef.current) {
-      const targetX = rotation.x * 0.02;
-      const targetY = rotation.y * 0.02;
-      groupRef.current.rotation.x += (targetX - groupRef.current.rotation.x) * 0.08;
-      groupRef.current.rotation.y += (targetY - groupRef.current.rotation.y) * 0.08;
+      // Much faster rotation - increased multiplier from 0.02 to 0.08
+      const targetX = rotation.x * 0.08;
+      const targetY = rotation.y * 0.08;
+      // Faster lerp from 0.08 to 0.15
+      groupRef.current.rotation.x += (targetX - groupRef.current.rotation.x) * 0.15;
+      groupRef.current.rotation.y += (targetY - groupRef.current.rotation.y) * 0.15;
     }
   });
 
@@ -77,42 +104,8 @@ const AbstractProduct = ({ rotation, zoom }: { rotation: { x: number; y: number 
   );
 };
 
-// GLTF Model Component
-const GLTFProduct = ({ rotation, zoom, url }: { rotation: { x: number; y: number }; zoom: number; url: string }) => {
-  const groupRef = useRef<THREE.Group>(null);
-  const { scene } = useGLTF(url);
-
-  useFrame(() => {
-    if (groupRef.current) {
-      const targetX = rotation.x * 0.02;
-      const targetY = rotation.y * 0.02;
-      groupRef.current.rotation.x += (targetX - groupRef.current.rotation.x) * 0.08;
-      groupRef.current.rotation.y += (targetY - groupRef.current.rotation.y) * 0.08;
-    }
-  });
-
-  // Clone and apply white material to all meshes
-  useEffect(() => {
-    scene.traverse((child) => {
-      if (child instanceof THREE.Mesh) {
-        child.material = new THREE.MeshStandardMaterial({
-          color: '#ffffff',
-          metalness: 0.8,
-          roughness: 0.2,
-        });
-        child.castShadow = true;
-      }
-    });
-  }, [scene]);
-
-  return (
-    <Float speed={1.2} rotationIntensity={0.15} floatIntensity={0.4}>
-      <group ref={groupRef} scale={zoom * 2}>
-        <primitive object={scene} />
-      </group>
-    </Float>
-  );
-};
+// Preload model
+useGLTF.preload('https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/can-coca-cola/model.gltf');
 
 // Gesture Indicator Overlay
 const GestureIndicator = ({ gesture, confidence }: { gesture: string; confidence: number }) => {
@@ -266,14 +259,16 @@ const GestureDemo = ({ title, description }: GestureDemoProps) => {
         setGestureState(gesture);
 
         if (gesture.gesture === 'open') {
+          // Much faster rotation - increased multiplier from 15 to 40
           setRotation({
-            x: (gesture.position.y - 0.5) * 15,
-            y: (gesture.position.x - 0.5) * 15,
+            x: (gesture.position.y - 0.5) * 40,
+            y: (gesture.position.x - 0.5) * 40,
           });
         }
 
         if (gesture.gesture === 'pinch') {
-          setZoom((prev) => Math.max(0.5, Math.min(2.5, prev + (gesture.confidence - 0.5) * 0.03)));
+          // Much faster zoom - increased from 0.03 to 0.12
+          setZoom((prev) => Math.max(0.3, Math.min(3, prev + (gesture.confidence - 0.5) * 0.12)));
         }
 
         // Draw hand skeleton
@@ -394,11 +389,11 @@ const GestureDemo = ({ title, description }: GestureDemoProps) => {
           dpr={[1, 2]}
           gl={{ antialias: true, alpha: true }}
         >
-          <Suspense fallback={null}>
+          <Suspense fallback={<AbstractProduct rotation={rotation} zoom={zoom} />}>
             <ambientLight intensity={0.4} />
             <directionalLight position={[10, 10, 5]} intensity={1.5} color="#ffffff" />
             <directionalLight position={[-10, -10, -5]} intensity={0.5} color="#ffffff" />
-            <AbstractProduct rotation={rotation} zoom={zoom} />
+            <CocaColaProduct rotation={rotation} zoom={zoom} />
             <ContactShadows
               position={[0, -2.5, 0]}
               opacity={0.3}
