@@ -109,11 +109,11 @@ const PricingSection = () => {
 
             {/* CTA */}
             <div className="space-y-4">
-              <Button variant="magnetic" size="xl" className="w-full text-lg">
+              <Button variant="default" size="xl" className="w-full text-lg">
                 <Zap className="w-5 h-5 mr-2" />
                 Reserve Your Spot
               </Button>
-              <Button variant="glass" size="lg" className="w-full">
+              <Button variant="outline" size="lg" className="w-full">
                 Learn More
               </Button>
             </div>

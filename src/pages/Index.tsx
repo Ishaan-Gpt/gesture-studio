@@ -1,4 +1,4 @@
-import ParticleBackground from '@/components/ParticleBackground';
+import GridBackground from '@/components/GridBackground';
 import HeroSection from '@/components/HeroSection';
 import VisionSection from '@/components/VisionSection';
 import DemoShowcase from '@/components/DemoShowcase';
@@ -9,9 +9,9 @@ import Footer from '@/components/Footer';
 
 const Index = () => {
   return (
-    <div className="relative min-h-screen bg-background overflow-hidden">
-      {/* Particle Background */}
-      <ParticleBackground />
+    <div className="relative min-h-screen bg-background overflow-hidden noise">
+      {/* Grid Background */}
+      <GridBackground />
       
       {/* Main Content */}
       <main className="relative z-10">
