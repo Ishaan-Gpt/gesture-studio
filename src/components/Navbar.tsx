@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Menu, X, Zap } from 'lucide-react';
+import { Menu, X, Hand, ArrowRight } from 'lucide-react';
+import { toast } from 'sonner';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -20,10 +21,17 @@ const Navbar = () => {
     setIsMobileMenuOpen(false);
   };
 
+  const handleStartProject = () => {
+    scrollToSection('pricing');
+    toast.success('Let\'s build something amazing!', { 
+      description: 'Choose a package that fits your needs.' 
+    });
+  };
+
   const navItems = [
-    { label: 'Vision', id: 'vision' },
-    { label: 'Demos', id: 'demos' },
-    { label: 'Features', id: 'features' },
+    { label: 'Work', id: 'demos' },
+    { label: 'Services', id: 'features' },
+    { label: 'About', id: 'vision' },
     { label: 'Pricing', id: 'pricing' },
   ];
 
@@ -49,7 +57,7 @@ const Navbar = () => {
               className="flex items-center gap-3 group"
             >
               <div className="w-8 h-8 rounded-lg bg-foreground flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Zap className="w-4 h-4 text-background" />
+                <Hand className="w-4 h-4 text-background" />
               </div>
               <span className="font-display font-bold text-lg tracking-tight hidden sm:block">
                 GESTURA
@@ -75,10 +83,11 @@ const Navbar = () => {
               <Button
                 variant="default"
                 size="sm"
-                onClick={() => scrollToSection('demos')}
-                className="font-mono uppercase tracking-wider text-xs"
+                onClick={handleStartProject}
+                className="font-mono uppercase tracking-wider text-xs group"
               >
-                Try Demo
+                Start Project
+                <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
               </Button>
             </div>
 
@@ -123,10 +132,11 @@ const Navbar = () => {
               <Button
                 variant="default"
                 size="lg"
-                onClick={() => scrollToSection('demos')}
-                className="w-full mt-4 font-mono uppercase tracking-wider"
+                onClick={handleStartProject}
+                className="w-full mt-4 font-mono uppercase tracking-wider group"
               >
-                Try Demo
+                Start Project
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Button>
             </div>
           </motion.div>
