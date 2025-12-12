@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback, Suspense } from 'react';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { OrbitControls, Float, Environment, ContactShadows, useGLTF } from '@react-three/drei';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { OrbitControls, Float, Environment, ContactShadows } from '@react-three/drei';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Hands, Results } from '@mediapipe/hands';
 import { Camera } from '@mediapipe/camera_utils';
@@ -14,88 +14,66 @@ interface GestureState {
   confidence: number;
 }
 
-// Coca-Cola Can Model - responds to gestures
-const CocaColaProduct = ({ rotation, zoom }: { rotation: { x: number; y: number }; zoom: number }) => {
+// Premium 3D Product - Gesture-responsive geometric shape
+const GestureProduct = ({ rotation, zoom }: { rotation: { x: number; y: number }; zoom: number }) => {
   const groupRef = useRef<THREE.Group>(null);
-  const { scene } = useGLTF('https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/can-coca-cola/model.gltf');
+  const innerRef = useRef<THREE.Mesh>(null);
 
-  useFrame(() => {
+  useFrame((state) => {
     if (groupRef.current) {
-      // Much faster rotation - increased multiplier from 0.02 to 0.08
+      // Fast rotation response
       const targetX = rotation.x * 0.08;
       const targetY = rotation.y * 0.08;
-      // Faster lerp from 0.08 to 0.15
       groupRef.current.rotation.x += (targetX - groupRef.current.rotation.x) * 0.15;
       groupRef.current.rotation.y += (targetY - groupRef.current.rotation.y) * 0.15;
+    }
+    if (innerRef.current) {
+      innerRef.current.rotation.y = state.clock.elapsedTime * 0.3;
     }
   });
 
   return (
     <Float speed={1.2} rotationIntensity={0.1} floatIntensity={0.3}>
-      <group ref={groupRef} scale={zoom * 10} position={[0, -0.5, 0]}>
-        <primitive object={scene.clone()} />
-      </group>
-    </Float>
-  );
-};
-
-// Fallback 3D Product - Geometric Abstract Shape
-const AbstractProduct = ({ rotation, zoom }: { rotation: { x: number; y: number }; zoom: number }) => {
-  const groupRef = useRef<THREE.Group>(null);
-
-  useFrame((state) => {
-    if (groupRef.current) {
-      // Much faster rotation - increased multiplier from 0.02 to 0.08
-      const targetX = rotation.x * 0.08;
-      const targetY = rotation.y * 0.08;
-      // Faster lerp from 0.08 to 0.15
-      groupRef.current.rotation.x += (targetX - groupRef.current.rotation.x) * 0.15;
-      groupRef.current.rotation.y += (targetY - groupRef.current.rotation.y) * 0.15;
-    }
-  });
-
-  return (
-    <Float speed={1.2} rotationIntensity={0.15} floatIntensity={0.4}>
       <group ref={groupRef} scale={zoom}>
-        {/* Main torus */}
+        {/* Main torus - primary shape */}
         <mesh castShadow>
-          <torusGeometry args={[1.5, 0.4, 32, 64]} />
+          <torusGeometry args={[1.8, 0.5, 32, 64]} />
           <meshStandardMaterial
             color="#ffffff"
             metalness={0.95}
             roughness={0.05}
-            envMapIntensity={1.5}
+            envMapIntensity={2}
           />
         </mesh>
         
-        {/* Inner sphere */}
-        <mesh castShadow>
-          <sphereGeometry args={[0.6, 32, 32]} />
+        {/* Inner rotating sphere */}
+        <mesh ref={innerRef} castShadow>
+          <dodecahedronGeometry args={[0.8]} />
           <meshStandardMaterial
             color="#ffffff"
-            metalness={0.8}
-            roughness={0.2}
-            envMapIntensity={1}
+            metalness={0.9}
+            roughness={0.1}
+            envMapIntensity={1.5}
           />
         </mesh>
 
         {/* Outer wireframe */}
-        <mesh scale={1.1}>
+        <mesh scale={1.3}>
           <icosahedronGeometry args={[2, 1]} />
-          <meshBasicMaterial color="#ffffff" wireframe opacity={0.15} transparent />
+          <meshBasicMaterial color="#ffffff" wireframe opacity={0.12} transparent />
         </mesh>
 
-        {/* Orbiting elements */}
-        {[0, 1, 2].map((i) => (
+        {/* Orbiting cubes */}
+        {[0, 1, 2, 3].map((i) => (
           <mesh
             key={i}
             position={[
-              Math.cos((i * Math.PI * 2) / 3) * 2.2,
-              0,
-              Math.sin((i * Math.PI * 2) / 3) * 2.2
+              Math.cos((i * Math.PI * 2) / 4) * 2.8,
+              Math.sin((i * Math.PI) / 4) * 0.5,
+              Math.sin((i * Math.PI * 2) / 4) * 2.8
             ]}
           >
-            <boxGeometry args={[0.15, 0.15, 0.15]} />
+            <boxGeometry args={[0.18, 0.18, 0.18]} />
             <meshStandardMaterial color="#ffffff" metalness={1} roughness={0} />
           </mesh>
         ))}
@@ -103,9 +81,6 @@ const AbstractProduct = ({ rotation, zoom }: { rotation: { x: number; y: number 
     </Float>
   );
 };
-
-// Preload model
-useGLTF.preload('https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/can-coca-cola/model.gltf');
 
 // Gesture Indicator Overlay
 const GestureIndicator = ({ gesture, confidence }: { gesture: string; confidence: number }) => {
@@ -389,11 +364,11 @@ const GestureDemo = ({ title, description }: GestureDemoProps) => {
           dpr={[1, 2]}
           gl={{ antialias: true, alpha: true }}
         >
-          <Suspense fallback={<AbstractProduct rotation={rotation} zoom={zoom} />}>
+          <Suspense fallback={null}>
             <ambientLight intensity={0.4} />
             <directionalLight position={[10, 10, 5]} intensity={1.5} color="#ffffff" />
             <directionalLight position={[-10, -10, -5]} intensity={0.5} color="#ffffff" />
-            <CocaColaProduct rotation={rotation} zoom={zoom} />
+            <GestureProduct rotation={rotation} zoom={zoom} />
             <ContactShadows
               position={[0, -2.5, 0]}
               opacity={0.3}
