@@ -1,4 +1,5 @@
 import GridBackground from '@/components/GridBackground';
+import Navbar from '@/components/Navbar';
 import HeroSection from '@/components/HeroSection';
 import VisionSection from '@/components/VisionSection';
 import DemoShowcase from '@/components/DemoShowcase';
@@ -12,6 +13,9 @@ const Index = () => {
     <div className="relative min-h-screen bg-background overflow-hidden noise">
       {/* Grid Background */}
       <GridBackground />
+      
+      {/* Navbar */}
+      <Navbar />
       
       {/* Main Content */}
       <main className="relative z-10">
