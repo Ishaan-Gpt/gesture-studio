@@ -1,57 +1,48 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
 import GlassCard from './GlassCard';
+import { Button } from '@/components/ui/button';
 import {
   ShoppingBag,
   Presentation,
-  GraduationCap,
-  Gamepad2,
-  PieChart,
-  Image,
+  Building2,
+  Laptop,
+  Car,
+  Watch,
+  ArrowRight,
 } from 'lucide-react';
+import { toast } from 'sonner';
 
 const useCases = [
   {
     icon: ShoppingBag,
     title: 'E-Commerce',
-    description: 'Let customers rotate, zoom, and explore products in 3D before buying. Increase engagement and reduce returns.',
-    image: '/placeholder.svg',
-    gradient: 'from-primary/20 to-secondary/20',
+    description: 'Let customers rotate, zoom, and explore products in 3D. Reduce returns, increase conversions.',
   },
   {
-    icon: Image,
-    title: 'Portfolios',
-    description: 'Create immersive portfolio experiences that showcase your work in interactive 3D galleries.',
-    image: '/placeholder.svg',
-    gradient: 'from-secondary/20 to-accent/20',
+    icon: Car,
+    title: 'Automotive',
+    description: 'Configure vehicles with gesture controls. Interior views, color changes, feature exploration.',
+  },
+  {
+    icon: Watch,
+    title: 'Luxury Goods',
+    description: 'Showcase watches, jewelry, and accessories with cinematic 3D presentations.',
+  },
+  {
+    icon: Building2,
+    title: 'Real Estate',
+    description: 'Virtual property tours with gesture-based navigation and room exploration.',
+  },
+  {
+    icon: Laptop,
+    title: 'Tech Products',
+    description: 'Interactive product demos that let users experience features before buying.',
   },
   {
     icon: Presentation,
-    title: 'Presentations',
-    description: 'Deliver engaging presentations with gesture-controlled slides and 3D data visualizations.',
-    image: '/placeholder.svg',
-    gradient: 'from-accent/20 to-primary/20',
-  },
-  {
-    icon: GraduationCap,
-    title: 'Education',
-    description: 'Transform learning with interactive 3D models students can manipulate with natural gestures.',
-    image: '/placeholder.svg',
-    gradient: 'from-primary/20 to-accent/20',
-  },
-  {
-    icon: Gamepad2,
-    title: 'Gaming',
-    description: 'Build casual web games with gesture controls that feel natural and engaging.',
-    image: '/placeholder.svg',
-    gradient: 'from-secondary/20 to-primary/20',
-  },
-  {
-    icon: PieChart,
-    title: 'Data Analytics',
-    description: 'Explore complex datasets in 3D space with intuitive gesture-based navigation.',
-    image: '/placeholder.svg',
-    gradient: 'from-accent/20 to-secondary/20',
+    title: 'Brand Experiences',
+    description: 'Immersive storytelling for campaigns, events, and product launches.',
   },
 ];
 
@@ -59,6 +50,10 @@ const UseCasesSection = () => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const containerRef = useRef(null);
   const isInView = useInView(containerRef, { once: true, margin: '-100px' });
+
+  const handleExploreCase = (title: string) => {
+    toast.info(`${title} case study`, { description: 'Detailed case study coming soon!' });
+  };
 
   return (
     <section className="relative py-32 overflow-hidden" ref={containerRef}>
@@ -71,10 +66,11 @@ const UseCasesSection = () => {
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-display font-bold mb-4">
-            Endless <span className="gradient-text">Possibilities</span>
+            Industries We <span className="gradient-text">Transform</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            From e-commerce to education, gesture controls unlock new ways to engage users.
+            From luxury retail to automotive, we've helped brands across industries 
+            create memorable gesture-controlled experiences.
           </p>
         </motion.div>
 
@@ -89,37 +85,44 @@ const UseCasesSection = () => {
               onMouseEnter={() => setHoveredIndex(index)}
               onMouseLeave={() => setHoveredIndex(null)}
             >
-              <GlassCard className="h-full group cursor-pointer overflow-hidden">
-                {/* Gradient Background */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${useCase.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-                
+              <GlassCard className="h-full group cursor-pointer overflow-hidden hover:bg-foreground/[0.02] transition-colors p-6">
                 <div className="relative z-10">
                   {/* Icon */}
                   <motion.div
                     animate={{
                       scale: hoveredIndex === index ? 1.1 : 1,
-                      rotate: hoveredIndex === index ? 5 : 0,
                     }}
                     transition={{ type: 'spring', stiffness: 300 }}
-                    className="inline-flex p-3 rounded-xl bg-gradient-to-br from-primary/20 to-secondary/20 mb-4"
+                    className="inline-flex p-3 rounded-xl bg-foreground/5 mb-4"
                   >
-                    <useCase.icon className="w-6 h-6 text-primary" />
+                    <useCase.icon className="w-6 h-6 text-foreground" />
                   </motion.div>
 
                   {/* Content */}
-                  <h3 className="text-xl font-display font-bold mb-2 group-hover:gradient-text transition-all">
+                  <h3 className="text-xl font-display font-bold mb-2">
                     {useCase.title}
                   </h3>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-muted-foreground mb-4">
                     {useCase.description}
                   </p>
+
+                  {/* CTA */}
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={() => handleExploreCase(useCase.title)}
+                    className="opacity-0 group-hover:opacity-100 transition-opacity p-0 h-auto"
+                  >
+                    View Case Study
+                    <ArrowRight className="w-3 h-3 ml-1" />
+                  </Button>
 
                   {/* Hover indicator */}
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: hoveredIndex === index ? '100%' : 0 }}
                     transition={{ duration: 0.3 }}
-                    className="h-0.5 bg-gradient-to-r from-primary to-secondary mt-4"
+                    className="h-0.5 bg-foreground/20 mt-4"
                   />
                 </div>
               </GlassCard>

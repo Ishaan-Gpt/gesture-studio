@@ -1,4 +1,5 @@
 import GridBackground from '@/components/GridBackground';
+import GlowCursor from '@/components/GlowCursor';
 import Navbar from '@/components/Navbar';
 import HeroSection from '@/components/HeroSection';
 import VisionSection from '@/components/VisionSection';
@@ -10,7 +11,10 @@ import Footer from '@/components/Footer';
 
 const Index = () => {
   return (
-    <div className="relative min-h-screen bg-background overflow-hidden noise">
+    <div className="relative min-h-screen bg-background overflow-hidden noise cursor-none">
+      {/* Custom Glow Cursor */}
+      <GlowCursor />
+      
       {/* Grid Background */}
       <GridBackground />
       

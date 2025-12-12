@@ -1,43 +1,91 @@
 import { motion, useInView } from 'framer-motion';
-import { useRef, useState, useEffect } from 'react';
+import { useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import GlassCard from './GlassCard';
 import {
   Check,
-  Sparkles,
   Clock,
-  Shield,
   Zap,
+  ArrowRight,
+  Calendar,
+  MessageSquare,
 } from 'lucide-react';
+import { toast } from 'sonner';
 
-const features = [
-  'All 3 gesture-controlled components',
-  'Full TypeScript support',
-  'Unlimited projects',
-  'Priority support',
-  'Source code access',
-  'Lifetime updates',
-  'Commercial license',
+const packages = [
+  {
+    name: 'Starter',
+    description: 'Perfect for landing pages & simple interactions',
+    hours: '30',
+    price: '4,500',
+    features: [
+      '1 custom gesture component',
+      'Basic gesture recognition (rotate, zoom)',
+      '2 revision rounds',
+      'Mobile fallback UI',
+      'Integration support',
+    ],
+    popular: false,
+  },
+  {
+    name: 'Pro',
+    description: 'For product showcases & interactive experiences',
+    hours: '60',
+    price: '8,500',
+    features: [
+      'Up to 3 gesture components',
+      'Advanced gesture recognition',
+      'Custom 3D model integration',
+      '4 revision rounds',
+      'Analytics dashboard',
+      'Priority support',
+    ],
+    popular: true,
+  },
+  {
+    name: 'Enterprise',
+    description: 'Full-scale immersive web experiences',
+    hours: 'Custom',
+    price: 'Custom',
+    features: [
+      'Unlimited components',
+      'Multi-gesture workflows',
+      'Custom AI training',
+      'Dedicated project manager',
+      'SLA guarantee',
+      'White-label solution',
+    ],
+    popular: false,
+  },
 ];
 
 const PricingSection = () => {
   const containerRef = useRef(null);
   const isInView = useInView(containerRef, { once: true, margin: '-100px' });
-  const [spotsLeft, setSpotsLeft] = useState(3);
 
-  // Simulated countdown (just for demo purposes)
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setSpotsLeft((prev) => Math.max(1, prev - (Math.random() > 0.95 ? 1 : 0)));
-    }, 10000);
-    return () => clearInterval(interval);
-  }, []);
+  const handleBookCall = () => {
+    toast.success('Booking request received!', { 
+      description: 'We\'ll reach out within 24 hours to schedule your call.' 
+    });
+  };
+
+  const handleGetStarted = (packageName: string) => {
+    toast.success(`${packageName} package selected!`, {
+      description: 'Redirecting to project intake form...',
+    });
+  };
+
+  const handleContactSales = () => {
+    toast.info('Opening contact form...', {
+      description: 'Our enterprise team will reach out shortly.',
+    });
+  };
 
   return (
-    <section className="relative py-32 overflow-hidden" ref={containerRef}>
+    <section id="pricing" className="relative py-32 overflow-hidden" ref={containerRef}>
       {/* Background glow */}
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="w-[600px] h-[600px] rounded-full bg-gradient-to-r from-primary/20 to-secondary/20 blur-[120px]" />
+        <div className="w-[800px] h-[800px] rounded-full bg-foreground/[0.02] blur-[150px]" />
       </div>
 
       <div className="relative z-10 container mx-auto px-6">
@@ -48,83 +96,102 @@ const PricingSection = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-display font-bold mb-4">
-            Early Access <span className="gradient-text">Pricing</span>
+          <div className="inline-flex items-center gap-2 glass-card rounded-full px-4 py-2 mb-6">
+            <Clock className="w-4 h-4 text-muted-foreground" />
+            <span className="text-xs font-mono uppercase tracking-widest text-muted-foreground">
+              Transparent Pricing
+            </span>
+          </div>
+          <h2 className="text-4xl md:text-6xl font-display font-bold mb-4">
+            Your Component, <span className="gradient-text">Our Expertise</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Be among the first to revolutionize your web experiences with gesture control.
+            We build custom gesture-controlled 3D components tailored to your brand. 
+            Fixed timelines. No surprises.
           </p>
         </motion.div>
 
-        {/* Pricing Card */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={isInView ? { opacity: 1, scale: 1 } : {}}
-          transition={{ delay: 0.2, duration: 0.6 }}
-          className="max-w-lg mx-auto"
-        >
-          <GlassCard className="p-8 border-primary/30">
-            {/* Badge */}
-            <div className="flex justify-between items-start mb-6">
-              <div className="inline-flex items-center gap-2 bg-primary/20 text-primary px-3 py-1 rounded-full text-sm font-medium">
-                <Sparkles className="w-4 h-4" />
-                Limited Offer
-              </div>
-              <motion.div
-                animate={{ scale: [1, 1.05, 1] }}
-                transition={{ repeat: Infinity, duration: 2 }}
-                className="flex items-center gap-1 text-accent text-sm font-medium"
+        {/* Pricing Cards */}
+        <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto mb-16">
+          {packages.map((pkg, index) => (
+            <motion.div
+              key={pkg.name}
+              initial={{ opacity: 0, y: 30 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: 0.1 + index * 0.1, duration: 0.6 }}
+            >
+              <GlassCard 
+                className={`p-8 h-full flex flex-col ${
+                  pkg.popular ? 'border-foreground/30 glow-white' : ''
+                }`}
               >
-                <Clock className="w-4 h-4" />
-                Only {spotsLeft} spots left
-              </motion.div>
-            </div>
-
-            {/* Price */}
-            <div className="mb-8">
-              <div className="flex items-baseline gap-3 mb-2">
-                <span className="text-2xl text-muted-foreground line-through">$200</span>
-                <span className="text-6xl font-display font-bold gradient-text">$20</span>
-              </div>
-              <p className="text-muted-foreground">One-time payment • Lifetime access</p>
-            </div>
-
-            {/* Features */}
-            <div className="space-y-3 mb-8">
-              {features.map((feature, index) => (
-                <motion.div
-                  key={feature}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={isInView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ delay: 0.3 + index * 0.05, duration: 0.4 }}
-                  className="flex items-center gap-3"
-                >
-                  <div className="flex-shrink-0 w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center">
-                    <Check className="w-3 h-3 text-primary" />
+                {pkg.popular && (
+                  <div className="inline-flex items-center gap-2 bg-foreground text-background px-3 py-1 rounded-full text-xs font-mono uppercase tracking-wider mb-6 self-start">
+                    <Zap className="w-3 h-3" />
+                    Most Popular
                   </div>
-                  <span className="text-sm">{feature}</span>
-                </motion.div>
-              ))}
-            </div>
+                )}
 
-            {/* CTA */}
-            <div className="space-y-4">
-              <Button variant="default" size="xl" className="w-full text-lg">
-                <Zap className="w-5 h-5 mr-2" />
-                Reserve Your Spot
-              </Button>
-              <Button variant="outline" size="lg" className="w-full">
-                Learn More
-              </Button>
-            </div>
+                <h3 className="text-2xl font-display font-bold mb-2">{pkg.name}</h3>
+                <p className="text-sm text-muted-foreground mb-6">{pkg.description}</p>
 
-            {/* Trust Indicators */}
-            <div className="flex items-center justify-center gap-4 mt-6 pt-6 border-t border-border">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Shield className="w-4 h-4 text-primary" />
-                30-day money-back guarantee
+                <div className="mb-6">
+                  <div className="flex items-baseline gap-2">
+                    {pkg.price !== 'Custom' && <span className="text-sm text-muted-foreground">$</span>}
+                    <span className="text-5xl font-display font-bold">{pkg.price}</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {pkg.hours !== 'Custom' ? `${pkg.hours} hours delivery` : 'Tailored to your needs'}
+                  </p>
+                </div>
+
+                <div className="space-y-3 mb-8 flex-1">
+                  {pkg.features.map((feature) => (
+                    <div key={feature} className="flex items-start gap-3">
+                      <div className="flex-shrink-0 w-5 h-5 rounded-full bg-foreground/10 flex items-center justify-center mt-0.5">
+                        <Check className="w-3 h-3" />
+                      </div>
+                      <span className="text-sm text-muted-foreground">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <Button
+                  variant={pkg.popular ? 'default' : 'outline'}
+                  size="lg"
+                  className="w-full group"
+                  onClick={() => pkg.price === 'Custom' ? handleContactSales() : handleGetStarted(pkg.name)}
+                >
+                  {pkg.price === 'Custom' ? 'Contact Sales' : 'Get Started'}
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </Button>
+              </GlassCard>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Book a Call CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.5, duration: 0.6 }}
+          className="text-center"
+        >
+          <GlassCard className="inline-flex flex-col sm:flex-row items-center gap-6 p-6 px-8">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-full bg-foreground/10 flex items-center justify-center">
+                <Calendar className="w-5 h-5" />
+              </div>
+              <div className="text-left">
+                <p className="font-display font-semibold">Not sure which package?</p>
+                <p className="text-sm text-muted-foreground">Book a free 30-min strategy call</p>
               </div>
             </div>
+            <Button variant="default" size="lg" onClick={handleBookCall} className="group">
+              <MessageSquare className="w-4 h-4" />
+              Book a Call
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </Button>
           </GlassCard>
         </motion.div>
 
@@ -132,18 +199,18 @@ const PricingSection = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.5, duration: 0.6 }}
-          className="max-w-2xl mx-auto mt-12 text-center"
+          transition={{ delay: 0.6, duration: 0.6 }}
+          className="max-w-3xl mx-auto mt-20 text-center"
         >
-          <blockquote className="text-lg italic text-muted-foreground">
-            "This completely changed how users interact with our product pages. 
-            Engagement went up 300% after implementing gesture controls."
+          <blockquote className="text-xl md:text-2xl font-display italic text-muted-foreground mb-6">
+            "They delivered a gesture-controlled product configurator in just 3 weeks. 
+            Our conversion rate jumped 40% on mobile."
           </blockquote>
-          <div className="mt-4 flex items-center justify-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-primary to-secondary" />
+          <div className="flex items-center justify-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-gradient-to-r from-foreground/20 to-foreground/10" />
             <div className="text-left">
-              <div className="font-medium">Sarah Chen</div>
-              <div className="text-sm text-muted-foreground">Head of Product, TechStartup</div>
+              <div className="font-display font-semibold">Marcus Chen</div>
+              <div className="text-sm text-muted-foreground">VP Product, LuxTech</div>
             </div>
           </div>
         </motion.div>
