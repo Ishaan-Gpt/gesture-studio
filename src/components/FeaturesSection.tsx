@@ -16,58 +16,50 @@ const features = [
   {
     icon: Zap,
     title: 'Easy Integration',
-    description: 'Drop-in components that work with any React, Vue, or vanilla JS project in minutes.',
+    description: 'Drop-in components for React, Vue, or vanilla JS.',
     size: 'large',
-    color: 'cyan',
   },
   {
     icon: Puzzle,
     title: 'Framework Agnostic',
-    description: 'Works seamlessly with React, Vue, Svelte, or plain HTML.',
+    description: 'Works with any modern stack.',
     size: 'normal',
-    color: 'purple',
   },
   {
     icon: Gauge,
-    title: 'Performance Optimized',
-    description: '60fps gesture recognition with minimal CPU overhead.',
+    title: '60fps Performance',
+    description: 'Optimized gesture recognition.',
     size: 'normal',
-    color: 'accent',
   },
   {
     icon: Palette,
-    title: 'Fully Customizable',
-    description: 'Complete control over styling, gestures, and behavior through an intuitive API.',
+    title: 'Customizable',
+    description: 'Full control over styling and behavior.',
     size: 'wide',
-    color: 'cyan',
   },
   {
     icon: Shield,
     title: 'Privacy-First',
-    description: 'All processing happens locally in the browser. No data ever leaves the device.',
+    description: 'All processing happens locally.',
     size: 'normal',
-    color: 'purple',
   },
   {
     icon: Globe,
-    title: 'Cross-Browser Support',
-    description: 'Works on Chrome, Firefox, Safari, and Edge on desktop and mobile.',
+    title: 'Cross-Browser',
+    description: 'Chrome, Firefox, Safari, Edge.',
     size: 'normal',
-    color: 'accent',
   },
   {
     icon: Code2,
     title: 'TypeScript Native',
-    description: 'Full type definitions for excellent developer experience and code completion.',
+    description: 'Full type definitions included.',
     size: 'normal',
-    color: 'cyan',
   },
   {
     icon: Sparkles,
     title: 'Built-in Animations',
-    description: 'Smooth, physics-based animations that respond naturally to gestures.',
+    description: 'Physics-based motion.',
     size: 'normal',
-    color: 'purple',
   },
 ];
 
@@ -81,46 +73,32 @@ const FeaturesSection = () => {
         return 'md:col-span-2 md:row-span-2';
       case 'wide':
         return 'md:col-span-2';
-      case 'tall':
-        return 'md:row-span-2';
       default:
         return '';
     }
   };
 
-  const getColorClass = (color: string) => {
-    switch (color) {
-      case 'cyan':
-        return 'bg-primary/20 text-primary';
-      case 'purple':
-        return 'bg-secondary/20 text-secondary';
-      case 'accent':
-        return 'bg-accent/20 text-accent';
-      default:
-        return 'bg-primary/20 text-primary';
-    }
-  };
-
   return (
     <section className="relative py-32 overflow-hidden" ref={containerRef}>
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-card/30 to-transparent" />
-
       <div className="relative z-10 container mx-auto px-6">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-20"
         >
-          <h2 className="text-4xl md:text-5xl font-display font-bold mb-4">
-            Built for <span className="gradient-text">Developers</span>
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <div className="w-12 h-px bg-foreground" />
+            <span className="text-xs font-mono uppercase tracking-widest text-muted-foreground">Features</span>
+            <div className="w-12 h-px bg-foreground" />
+          </div>
+          
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-6">
+            BUILT FOR
+            <br />
+            <span className="text-muted-foreground">DEVELOPERS</span>
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Everything you need to create immersive gesture-controlled experiences,
-            with the developer experience you expect.
-          </p>
         </motion.div>
 
         {/* Bento Grid */}
@@ -130,24 +108,17 @@ const FeaturesSection = () => {
               key={feature.title}
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: 0.1 + index * 0.1, duration: 0.5 }}
+              transition={{ delay: 0.1 + index * 0.05, duration: 0.5 }}
               className={getGridClass(feature.size)}
             >
-              <GlassCard
-                className={`h-full p-6 ${feature.size === 'large' ? 'p-8' : ''}`}
-                glowColor={feature.color as 'cyan' | 'purple' | 'accent'}
-              >
-                <div className={`inline-flex p-3 rounded-xl mb-4 ${getColorClass(feature.color)}`}>
-                  <feature.icon className={`${feature.size === 'large' ? 'w-8 h-8' : 'w-6 h-6'}`} />
+              <GlassCard className={`h-full p-6 rounded-lg ${feature.size === 'large' ? 'p-8' : ''}`}>
+                <div className="inline-flex p-3 rounded-lg bg-foreground/5 mb-4">
+                  <feature.icon className={`${feature.size === 'large' ? 'w-7 h-7' : 'w-5 h-5'} text-foreground`} />
                 </div>
-                <h3 className={`font-display font-bold mb-2 ${
-                  feature.size === 'large' ? 'text-2xl' : 'text-lg'
-                }`}>
+                <h3 className={`font-display font-bold mb-2 ${feature.size === 'large' ? 'text-2xl' : 'text-base'}`}>
                   {feature.title}
                 </h3>
-                <p className={`text-muted-foreground ${
-                  feature.size === 'large' ? 'text-base' : 'text-sm'
-                }`}>
+                <p className={`text-muted-foreground font-mono ${feature.size === 'large' ? 'text-sm' : 'text-xs'}`}>
                   {feature.description}
                 </p>
               </GlassCard>
