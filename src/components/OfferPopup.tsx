@@ -9,7 +9,6 @@ const OfferPopup = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      // Check if user has already dismissed the popup
       const dismissed = sessionStorage.getItem('offer-popup-dismissed');
       if (!dismissed) {
         setIsOpen(true);
@@ -25,9 +24,7 @@ const OfferPopup = () => {
   };
 
   const handleClaimOffer = () => {
-    toast.success('Offer claimed!', {
-      description: 'Redirecting to book your spot...',
-    });
+    toast.success('Offer claimed!', { description: 'Redirecting to pricing...' });
     handleClose();
     document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -42,110 +39,68 @@ const OfferPopup = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={handleClose}
-            className="fixed inset-0 z-[100] bg-background/80 backdrop-blur-sm"
+            className="fixed inset-0 z-[100] bg-background/60 backdrop-blur-sm"
           />
 
-          {/* Popup */}
+          {/* Popup - Small & Centered */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            transition={{ type: 'spring', duration: 0.5 }}
-            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[101] w-[90%] max-w-lg"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ type: 'spring', duration: 0.4 }}
+            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[101] w-[320px]"
           >
-            <div className="glass-card rounded-2xl p-8 relative overflow-hidden border border-foreground/10">
-              {/* Glow effect */}
-              <div className="absolute -top-20 -right-20 w-40 h-40 rounded-full bg-foreground/10 blur-3xl" />
-              <div className="absolute -bottom-20 -left-20 w-40 h-40 rounded-full bg-foreground/5 blur-3xl" />
-              
-              {/* Close button */}
+            <div className="glass-card rounded-xl p-6 relative border border-foreground/10">
+              {/* Close */}
               <button
                 onClick={handleClose}
-                className="absolute top-4 right-4 p-2 hover:bg-foreground/10 rounded-full transition-colors z-10"
+                className="absolute top-3 right-3 p-1.5 hover:bg-foreground/10 rounded-full transition-colors"
               >
-                <X className="w-5 h-5 text-muted-foreground" />
+                <X className="w-4 h-4 text-muted-foreground" />
               </button>
 
               {/* Content */}
-              <div className="relative z-10 text-center">
+              <div className="text-center">
                 {/* Badge */}
-                <motion.div
-                  initial={{ y: -10, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.2 }}
-                  className="inline-flex items-center gap-2 bg-foreground text-background px-4 py-1.5 rounded-full text-xs font-mono uppercase tracking-wider mb-6"
-                >
+                <div className="inline-flex items-center gap-1.5 bg-foreground text-background px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-wider mb-4">
                   <Sparkles className="w-3 h-3" />
-                  Limited Time Offer
-                </motion.div>
+                  Limited Offer
+                </div>
 
                 {/* Headline */}
-                <motion.h3
-                  initial={{ y: 10, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.3 }}
-                  className="text-3xl md:text-4xl font-display font-bold mb-4"
-                >
-                  First 3 Clients Get
-                  <br />
-                  <span className="gradient-text">90% OFF</span>
-                </motion.h3>
+                <h3 className="text-xl font-display font-bold mb-2">
+                  First 3 Clients
+                </h3>
+                <p className="text-2xl font-display font-bold gradient-text mb-3">90% OFF</p>
 
-                {/* Price comparison */}
-                <motion.div
-                  initial={{ y: 10, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.4 }}
-                  className="flex items-center justify-center gap-4 mb-6"
-                >
-                  <span className="text-2xl text-muted-foreground line-through">$199</span>
-                  <span className="text-5xl font-display font-bold text-foreground">$20</span>
-                </motion.div>
+                {/* Price */}
+                <div className="flex items-center justify-center gap-3 mb-4">
+                  <span className="text-lg text-muted-foreground line-through">$199</span>
+                  <span className="text-3xl font-display font-bold">$20</span>
+                </div>
 
-                {/* Description */}
-                <motion.p
-                  initial={{ y: 10, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.5 }}
-                  className="text-muted-foreground text-sm mb-8 max-w-sm mx-auto"
-                >
-                  Get the full Pro package at a fraction of the cost. 
-                  Custom gesture component, 3D integration, and priority support included.
-                </motion.p>
-
-                {/* Urgency indicator */}
-                <motion.div
-                  initial={{ y: 10, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.6 }}
-                  className="flex items-center justify-center gap-2 text-xs font-mono text-muted-foreground mb-6"
-                >
+                {/* Urgency */}
+                <div className="flex items-center justify-center gap-1.5 text-[10px] font-mono text-muted-foreground mb-4">
                   <Clock className="w-3 h-3" />
-                  <span>Only 3 spots available</span>
-                </motion.div>
+                  <span>3 spots left</span>
+                </div>
 
                 {/* CTA */}
-                <motion.div
-                  initial={{ y: 10, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.7 }}
+                <Button
+                  variant="default"
+                  size="sm"
+                  onClick={handleClaimOffer}
+                  className="w-full group text-sm"
                 >
-                  <Button
-                    variant="default"
-                    size="lg"
-                    onClick={handleClaimOffer}
-                    className="w-full group text-base"
-                  >
-                    Claim Your Spot
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </Button>
-                  <button
-                    onClick={handleClose}
-                    className="mt-4 text-xs text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    No thanks, I'll pay full price
-                  </button>
-                </motion.div>
+                  Claim Spot
+                  <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                </Button>
+                <button
+                  onClick={handleClose}
+                  className="mt-3 text-[10px] text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  No thanks
+                </button>
               </div>
             </div>
           </motion.div>

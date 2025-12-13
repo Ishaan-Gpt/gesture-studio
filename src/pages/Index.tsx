@@ -2,6 +2,7 @@ import GridBackground from '@/components/GridBackground';
 import GlowCursor from '@/components/GlowCursor';
 import Navbar from '@/components/Navbar';
 import HeroSection from '@/components/HeroSection';
+import TrustBar from '@/components/TrustBar';
 import VisionSection from '@/components/VisionSection';
 import DemoShowcase from '@/components/DemoShowcase';
 import FeaturesSection from '@/components/FeaturesSection';
@@ -13,21 +14,14 @@ import OfferPopup from '@/components/OfferPopup';
 const Index = () => {
   return (
     <div className="relative min-h-screen bg-background overflow-hidden noise cursor-none">
-      {/* Custom Glow Cursor */}
       <GlowCursor />
-      
-      {/* Grid Background */}
       <GridBackground />
-      
-      {/* Navbar */}
       <Navbar />
-      
-      {/* Offer Popup */}
       <OfferPopup />
       
-      {/* Main Content */}
       <main className="relative z-10">
         <HeroSection />
+        <TrustBar />
         <VisionSection />
         <DemoShowcase />
         <FeaturesSection />
