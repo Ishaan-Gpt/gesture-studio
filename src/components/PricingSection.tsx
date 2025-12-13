@@ -17,7 +17,8 @@ const packages = [
     name: 'Starter',
     description: 'Perfect for landing pages & simple interactions',
     hours: '30',
-    price: '4,500',
+    price: '89',
+    originalPrice: null,
     features: [
       '1 custom gesture component',
       'Basic gesture recognition (rotate, zoom)',
@@ -31,7 +32,9 @@ const packages = [
     name: 'Pro',
     description: 'For product showcases & interactive experiences',
     hours: '60',
-    price: '8,500',
+    price: '199',
+    originalPrice: null,
+    discount: '$20 for first 3 clients',
     features: [
       'Up to 3 gesture components',
       'Advanced gesture recognition',
@@ -47,6 +50,7 @@ const packages = [
     description: 'Full-scale immersive web experiences',
     hours: 'Custom',
     price: 'Custom',
+    originalPrice: null,
     features: [
       'Unlimited components',
       'Multi-gesture workflows',
@@ -140,7 +144,12 @@ const PricingSection = () => {
                     {pkg.price !== 'Custom' && <span className="text-sm text-muted-foreground">$</span>}
                     <span className="text-5xl font-display font-bold">{pkg.price}</span>
                   </div>
-                  <p className="text-sm text-muted-foreground mt-1">
+                  {pkg.discount && (
+                    <div className="mt-2 inline-flex items-center gap-2 bg-foreground/10 px-3 py-1 rounded-full">
+                      <span className="text-xs font-mono text-foreground">{pkg.discount}</span>
+                    </div>
+                  )}
+                  <p className="text-sm text-muted-foreground mt-2">
                     {pkg.hours !== 'Custom' ? `${pkg.hours} hours delivery` : 'Tailored to your needs'}
                   </p>
                 </div>
