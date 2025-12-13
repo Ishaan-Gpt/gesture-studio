@@ -9,23 +9,20 @@ import { Camera as CameraIcon, Hand, RotateCcw, Loader2 } from 'lucide-react';
 import * as THREE from 'three';
 
 interface GestureState {
-  gesture: 'none' | 'open' | 'pinch' | 'point' | 'fist';
+  gesture: 'none' | 'open' | 'pinch' | 'point' | 'fist' | 'thumbsUp' | 'peace';
   position: { x: number; y: number };
   confidence: number;
 }
 
-// Premium 3D Product - Gesture-responsive geometric shape
-const GestureProduct = ({ rotation, zoom }: { rotation: { x: number; y: number }; zoom: number }) => {
+// Product Showcase Model - Torus composition
+const ProductModel = ({ rotation, zoom }: { rotation: { x: number; y: number }; zoom: number }) => {
   const groupRef = useRef<THREE.Group>(null);
   const innerRef = useRef<THREE.Mesh>(null);
 
   useFrame((state) => {
     if (groupRef.current) {
-      // Fast rotation response
-      const targetX = rotation.x * 0.08;
-      const targetY = rotation.y * 0.08;
-      groupRef.current.rotation.x += (targetX - groupRef.current.rotation.x) * 0.15;
-      groupRef.current.rotation.y += (targetY - groupRef.current.rotation.y) * 0.15;
+      groupRef.current.rotation.x += (rotation.x * 0.08 - groupRef.current.rotation.x) * 0.15;
+      groupRef.current.rotation.y += (rotation.y * 0.08 - groupRef.current.rotation.y) * 0.15;
     }
     if (innerRef.current) {
       innerRef.current.rotation.y = state.clock.elapsedTime * 0.3;
@@ -35,126 +32,134 @@ const GestureProduct = ({ rotation, zoom }: { rotation: { x: number; y: number }
   return (
     <Float speed={1.2} rotationIntensity={0.1} floatIntensity={0.3}>
       <group ref={groupRef} scale={zoom}>
-        {/* Main torus - primary shape */}
         <mesh castShadow>
           <torusGeometry args={[1.8, 0.5, 32, 64]} />
-          <meshStandardMaterial
-            color="#ffffff"
-            metalness={0.95}
-            roughness={0.05}
-            envMapIntensity={2}
-          />
+          <meshStandardMaterial color="#ffffff" metalness={0.95} roughness={0.05} envMapIntensity={2} />
         </mesh>
-        
-        {/* Inner rotating sphere */}
         <mesh ref={innerRef} castShadow>
           <dodecahedronGeometry args={[0.8]} />
-          <meshStandardMaterial
-            color="#ffffff"
-            metalness={0.9}
-            roughness={0.1}
-            envMapIntensity={1.5}
-          />
+          <meshStandardMaterial color="#ffffff" metalness={0.9} roughness={0.1} />
         </mesh>
-
-        {/* Outer wireframe */}
         <mesh scale={1.3}>
           <icosahedronGeometry args={[2, 1]} />
           <meshBasicMaterial color="#ffffff" wireframe opacity={0.12} transparent />
         </mesh>
-
-        {/* Orbiting cubes */}
-        {[0, 1, 2, 3].map((i) => (
-          <mesh
-            key={i}
-            position={[
-              Math.cos((i * Math.PI * 2) / 4) * 2.8,
-              Math.sin((i * Math.PI) / 4) * 0.5,
-              Math.sin((i * Math.PI * 2) / 4) * 2.8
-            ]}
-          >
-            <boxGeometry args={[0.18, 0.18, 0.18]} />
-            <meshStandardMaterial color="#ffffff" metalness={1} roughness={0} />
-          </mesh>
-        ))}
       </group>
     </Float>
   );
 };
 
-// Gesture Indicator Overlay
+// Card Gallery Model - Stacked cards
+const CardGalleryModel = ({ rotation, zoom }: { rotation: { x: number; y: number }; zoom: number }) => {
+  const groupRef = useRef<THREE.Group>(null);
+
+  useFrame(() => {
+    if (groupRef.current) {
+      groupRef.current.rotation.x += (rotation.x * 0.06 - groupRef.current.rotation.x) * 0.12;
+      groupRef.current.rotation.y += (rotation.y * 0.06 - groupRef.current.rotation.y) * 0.12;
+    }
+  });
+
+  return (
+    <Float speed={1} rotationIntensity={0.15} floatIntensity={0.4}>
+      <group ref={groupRef} scale={zoom}>
+        {[-1, 0, 1].map((i) => (
+          <mesh key={i} position={[i * 0.8, i * 0.15, i * -0.4]} rotation={[0, i * 0.1, 0]} castShadow>
+            <boxGeometry args={[2, 2.8, 0.08]} />
+            <meshStandardMaterial color="#ffffff" metalness={0.8} roughness={0.2} />
+          </mesh>
+        ))}
+        <mesh position={[0, 0, 1]}>
+          <ringGeometry args={[0.6, 0.8, 32]} />
+          <meshStandardMaterial color="#ffffff" metalness={1} roughness={0} />
+        </mesh>
+      </group>
+    </Float>
+  );
+};
+
+// Data Visualization Model - 3D bars
+const DataVizModel = ({ rotation, zoom }: { rotation: { x: number; y: number }; zoom: number }) => {
+  const groupRef = useRef<THREE.Group>(null);
+  const barsRef = useRef<THREE.Mesh[]>([]);
+
+  useFrame((state) => {
+    if (groupRef.current) {
+      groupRef.current.rotation.x += (rotation.x * 0.05 - groupRef.current.rotation.x) * 0.1;
+      groupRef.current.rotation.y += (rotation.y * 0.05 - groupRef.current.rotation.y) * 0.1;
+    }
+    barsRef.current.forEach((bar, i) => {
+      if (bar) {
+        const height = 1 + Math.sin(state.clock.elapsedTime * 2 + i) * 0.5;
+        bar.scale.y = height;
+        bar.position.y = height / 2;
+      }
+    });
+  });
+
+  return (
+    <Float speed={0.8} rotationIntensity={0.1} floatIntensity={0.2}>
+      <group ref={groupRef} scale={zoom}>
+        {[...Array(9)].map((_, i) => {
+          const x = (i % 3 - 1) * 0.8;
+          const z = (Math.floor(i / 3) - 1) * 0.8;
+          return (
+            <mesh
+              key={i}
+              ref={(el) => { if (el) barsRef.current[i] = el; }}
+              position={[x, 0.5, z]}
+              castShadow
+            >
+              <boxGeometry args={[0.5, 1, 0.5]} />
+              <meshStandardMaterial color="#ffffff" metalness={0.9} roughness={0.1} />
+            </mesh>
+          );
+        })}
+        <mesh position={[0, -0.1, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <planeGeometry args={[3, 3]} />
+          <meshStandardMaterial color="#ffffff" metalness={0.5} roughness={0.5} opacity={0.3} transparent />
+        </mesh>
+      </group>
+    </Float>
+  );
+};
+
+// Gesture Indicator
 const GestureIndicator = ({ gesture, confidence }: { gesture: string; confidence: number }) => {
-  const gestureLabels: Record<string, string> = {
-    none: 'AWAITING INPUT',
+  const labels: Record<string, string> = {
+    none: 'AWAITING',
     open: 'ROTATING',
     pinch: 'ZOOMING',
     point: 'POINTING',
     fist: 'PAUSED',
+    thumbsUp: 'APPROVED',
+    peace: 'PEACE MODE',
   };
 
   return (
     <motion.div
-      className="absolute top-4 left-4 glass-card rounded-lg p-4"
+      className="absolute top-4 left-4 glass-card rounded-lg px-3 py-2"
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
     >
-      <div className="flex items-center gap-4">
-        <div className="flex items-center gap-2">
-          <Hand className="w-4 h-4 text-foreground" />
-          <span className="text-xs font-mono uppercase tracking-wider">{gestureLabels[gesture]}</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-16 h-1 bg-muted rounded-full overflow-hidden">
-            <motion.div
-              className="h-full bg-foreground rounded-full"
-              animate={{ width: `${confidence * 100}%` }}
-            />
-          </div>
-          <span className="text-xs font-mono text-muted-foreground">{Math.round(confidence * 100)}%</span>
+      <div className="flex items-center gap-3">
+        <Hand className="w-3 h-3" />
+        <span className="text-[10px] font-mono uppercase tracking-wider">{labels[gesture]}</span>
+        <div className="w-12 h-1 bg-muted rounded-full overflow-hidden">
+          <motion.div className="h-full bg-foreground rounded-full" animate={{ width: `${confidence * 100}%` }} />
         </div>
       </div>
     </motion.div>
   );
 };
 
-// FPS Counter
-const FPSCounter = () => {
-  const [fps, setFps] = useState(60);
-  const frameCount = useRef(0);
-  const lastTime = useRef(performance.now());
-
-  useEffect(() => {
-    const updateFPS = () => {
-      frameCount.current++;
-      const now = performance.now();
-      if (now - lastTime.current >= 1000) {
-        setFps(frameCount.current);
-        frameCount.current = 0;
-        lastTime.current = now;
-      }
-      requestAnimationFrame(updateFPS);
-    };
-    const id = requestAnimationFrame(updateFPS);
-    return () => cancelAnimationFrame(id);
-  }, []);
-
-  return (
-    <div className="absolute bottom-4 left-4 glass-card rounded px-3 py-2">
-      <span className="text-xs font-mono uppercase tracking-wider">
-        <span className={fps >= 50 ? 'text-foreground' : 'text-muted-foreground'}>
-          {fps} FPS
-        </span>
-      </span>
-    </div>
-  );
-};
-
 interface GestureDemoProps {
   title: string;
   description: string;
+  modelType?: 'product' | 'cards' | 'dataviz';
 }
 
-const GestureDemo = ({ title, description }: GestureDemoProps) => {
+const GestureDemo = ({ title, description, modelType = 'product' }: GestureDemoProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [cameraEnabled, setCameraEnabled] = useState(false);
@@ -177,41 +182,58 @@ const GestureDemo = ({ title, description }: GestureDemoProps) => {
 
     const hand = landmarks[0];
     const thumbTip = hand[4];
+    const thumbIp = hand[3];
     const indexTip = hand[8];
+    const indexPip = hand[6];
     const middleTip = hand[12];
+    const middlePip = hand[10];
     const ringTip = hand[16];
+    const ringPip = hand[14];
     const pinkyTip = hand[20];
+    const pinkyPip = hand[18];
+    const wrist = hand[0];
     const indexMcp = hand[5];
 
-    const palmX = (hand[0].x + hand[5].x + hand[17].x) / 3;
-    const palmY = (hand[0].y + hand[5].y + hand[17].y) / 3;
+    const palmX = (wrist.x + hand[5].x + hand[17].x) / 3;
+    const palmY = (wrist.y + hand[5].y + hand[17].y) / 3;
 
-    // Pinch detection
+    // Pinch
     const thumbIndexDist = Math.hypot(thumbTip.x - indexTip.x, thumbTip.y - indexTip.y);
     if (thumbIndexDist < 0.06) {
-      return { gesture: 'pinch', position: { x: palmX, y: palmY }, confidence: Math.min(1, 1 - thumbIndexDist / 0.06) };
+      return { gesture: 'pinch', position: { x: palmX, y: palmY }, confidence: 1 - thumbIndexDist / 0.06 };
     }
 
-    // Open hand detection
-    const fingersExtended = [
-      indexTip.y < indexMcp.y,
-      middleTip.y < hand[9].y,
-      ringTip.y < hand[13].y,
-      pinkyTip.y < hand[17].y,
-    ].filter(Boolean).length;
+    // Finger extension checks
+    const indexExtended = indexTip.y < indexPip.y;
+    const middleExtended = middleTip.y < middlePip.y;
+    const ringExtended = ringTip.y < ringPip.y;
+    const pinkyExtended = pinkyTip.y < pinkyPip.y;
+    const thumbExtended = thumbTip.x < thumbIp.x || thumbTip.y < thumbIp.y;
 
-    if (fingersExtended >= 3) {
-      return { gesture: 'open', position: { x: palmX, y: palmY }, confidence: fingersExtended / 4 };
+    // Peace sign (V)
+    if (indexExtended && middleExtended && !ringExtended && !pinkyExtended) {
+      return { gesture: 'peace', position: { x: palmX, y: palmY }, confidence: 0.9 };
     }
 
-    // Fist detection
-    if (fingersExtended === 0) {
+    // Thumbs up
+    if (thumbExtended && !indexExtended && !middleExtended && !ringExtended && !pinkyExtended && thumbTip.y < wrist.y) {
+      return { gesture: 'thumbsUp', position: { x: palmX, y: palmY }, confidence: 0.9 };
+    }
+
+    // Point
+    if (indexExtended && !middleExtended && !ringExtended && !pinkyExtended) {
+      return { gesture: 'point', position: { x: indexTip.x, y: indexTip.y }, confidence: 0.85 };
+    }
+
+    // Fist
+    if (!indexExtended && !middleExtended && !ringExtended && !pinkyExtended) {
       return { gesture: 'fist', position: { x: palmX, y: palmY }, confidence: 0.9 };
     }
 
-    // Point detection
-    if (indexTip.y < indexMcp.y && fingersExtended <= 1) {
-      return { gesture: 'point', position: { x: indexTip.x, y: indexTip.y }, confidence: 0.85 };
+    // Open hand
+    const extendedCount = [indexExtended, middleExtended, ringExtended, pinkyExtended].filter(Boolean).length;
+    if (extendedCount >= 3) {
+      return { gesture: 'open', position: { x: palmX, y: palmY }, confidence: extendedCount / 4 };
     }
 
     return { gesture: 'none', position: { x: palmX, y: palmY }, confidence: 0.5 };
@@ -225,7 +247,6 @@ const GestureDemo = ({ title, description }: GestureDemoProps) => {
       canvas.width = videoRef.current.videoWidth;
       canvas.height = videoRef.current.videoHeight;
       
-      ctx.save();
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
 
@@ -234,19 +255,17 @@ const GestureDemo = ({ title, description }: GestureDemoProps) => {
         setGestureState(gesture);
 
         if (gesture.gesture === 'open') {
-          // Much faster rotation - increased multiplier from 15 to 40
           setRotation({
-            x: (gesture.position.y - 0.5) * 40,
-            y: (gesture.position.x - 0.5) * 40,
+            x: (gesture.position.y - 0.5) * 50,
+            y: (gesture.position.x - 0.5) * 50,
           });
         }
 
         if (gesture.gesture === 'pinch') {
-          // Much faster zoom - increased from 0.03 to 0.12
-          setZoom((prev) => Math.max(0.3, Math.min(3, prev + (gesture.confidence - 0.5) * 0.12)));
+          setZoom((prev) => Math.max(0.3, Math.min(3, prev + (gesture.confidence - 0.5) * 0.15)));
         }
 
-        // Draw hand skeleton
+        // Draw skeleton
         results.multiHandLandmarks.forEach((landmarks) => {
           const connections = [
             [0, 1], [1, 2], [2, 3], [3, 4],
@@ -257,7 +276,7 @@ const GestureDemo = ({ title, description }: GestureDemoProps) => {
             [0, 17],
           ];
 
-          ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
           ctx.lineWidth = 2;
           connections.forEach(([start, end]) => {
             ctx.beginPath();
@@ -268,22 +287,14 @@ const GestureDemo = ({ title, description }: GestureDemoProps) => {
 
           landmarks.forEach((landmark, index) => {
             ctx.beginPath();
-            ctx.arc(
-              landmark.x * canvas.width,
-              landmark.y * canvas.height,
-              index === 4 || index === 8 ? 5 : 3,
-              0,
-              2 * Math.PI
-            );
-            ctx.fillStyle = index === 4 || index === 8 ? '#ffffff' : 'rgba(255, 255, 255, 0.8)';
+            ctx.arc(landmark.x * canvas.width, landmark.y * canvas.height, [4, 8, 12, 16, 20].includes(index) ? 4 : 2, 0, 2 * Math.PI);
+            ctx.fillStyle = '#ffffff';
             ctx.fill();
           });
         });
       } else {
         setGestureState({ gesture: 'none', position: { x: 0, y: 0 }, confidence: 0 });
       }
-
-      ctx.restore();
     }
   }, [detectGesture]);
 
@@ -322,8 +333,7 @@ const GestureDemo = ({ title, description }: GestureDemoProps) => {
         setCameraEnabled(true);
       }
     } catch (err) {
-      console.error('Failed to enable camera:', err);
-      setError('Camera access denied or unavailable');
+      setError('Camera access denied');
     } finally {
       setIsLoading(false);
     }
@@ -336,149 +346,99 @@ const GestureDemo = ({ title, description }: GestureDemoProps) => {
 
   useEffect(() => {
     return () => {
-      if (cameraRef.current) {
-        cameraRef.current.stop();
-      }
-      if (handsRef.current) {
-        handsRef.current.close();
-      }
+      cameraRef.current?.stop();
+      handsRef.current?.close();
     };
   }, []);
 
+  const ModelComponent = modelType === 'cards' ? CardGalleryModel : modelType === 'dataviz' ? DataVizModel : ProductModel;
+
   return (
-    <div className="relative w-full h-full min-h-[500px] glass-card rounded-lg overflow-hidden">
+    <div className="relative w-full h-full min-h-[450px] glass-card rounded-lg overflow-hidden">
       {/* Header */}
-      <div className="absolute top-0 left-0 right-0 z-20 p-6 bg-gradient-to-b from-background/90 to-transparent">
-        <div className="flex items-center gap-2 mb-2">
-          <div className="w-2 h-2 rounded-full bg-foreground animate-pulse" />
-          <span className="text-xs font-mono uppercase tracking-widest text-muted-foreground">Live Demo</span>
+      <div className="absolute top-0 left-0 right-0 z-20 p-4 bg-gradient-to-b from-background/80 to-transparent">
+        <div className="flex items-center gap-2 mb-1">
+          <div className="w-1.5 h-1.5 rounded-full bg-foreground animate-pulse" />
+          <span className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Live Demo</span>
         </div>
-        <h3 className="text-xl font-display font-bold text-foreground">{title}</h3>
-        <p className="text-sm text-muted-foreground mt-1 font-mono">{description}</p>
+        <h3 className="text-base font-display font-bold">{title}</h3>
+        <p className="text-xs text-muted-foreground font-mono">{description}</p>
       </div>
 
       {/* 3D Canvas */}
       <div className="absolute inset-0 z-0">
-        <Canvas
-          camera={{ position: [0, 0, 8], fov: 45 }}
-          dpr={[1, 2]}
-          gl={{ antialias: true, alpha: true }}
-        >
+        <Canvas camera={{ position: [0, 0, 8], fov: 45 }} dpr={[1, 2]} gl={{ antialias: true, alpha: true }}>
           <Suspense fallback={null}>
             <ambientLight intensity={0.4} />
-            <directionalLight position={[10, 10, 5]} intensity={1.5} color="#ffffff" />
-            <directionalLight position={[-10, -10, -5]} intensity={0.5} color="#ffffff" />
-            <GestureProduct rotation={rotation} zoom={zoom} />
-            <ContactShadows
-              position={[0, -2.5, 0]}
-              opacity={0.3}
-              scale={15}
-              blur={2.5}
-              far={4}
-              color="#000000"
-            />
+            <directionalLight position={[10, 10, 5]} intensity={1.5} />
+            <directionalLight position={[-10, -10, -5]} intensity={0.5} />
+            <ModelComponent rotation={rotation} zoom={zoom} />
+            <ContactShadows position={[0, -2.5, 0]} opacity={0.3} scale={15} blur={2.5} />
             <Environment preset="studio" />
             {!cameraEnabled && <OrbitControls enableZoom enablePan={false} />}
           </Suspense>
         </Canvas>
       </div>
 
-      {/* Camera Feed */}
       <video ref={videoRef} className="hidden" playsInline />
       
       <AnimatePresence>
         {cameraEnabled && (
           <motion.div
-            className="absolute bottom-20 right-4 z-10"
+            className="absolute bottom-16 right-4 z-10"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
           >
             <div className="relative rounded-lg overflow-hidden border border-foreground/20">
-              <canvas
-                ref={canvasRef}
-                className="w-48 h-36 object-cover"
-                style={{ transform: 'scaleX(-1)' }}
-              />
-              <div className="absolute top-2 left-2 flex items-center gap-1.5">
-                <span className="w-2 h-2 bg-foreground rounded-full animate-pulse" />
-                <span className="text-[10px] font-mono uppercase tracking-wider">Live</span>
+              <canvas ref={canvasRef} className="w-36 h-28 object-cover" style={{ transform: 'scaleX(-1)' }} />
+              <div className="absolute top-1 left-1 flex items-center gap-1">
+                <span className="w-1.5 h-1.5 bg-foreground rounded-full animate-pulse" />
+                <span className="text-[8px] font-mono uppercase">Live</span>
               </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Gesture Indicator */}
-      {cameraEnabled && (
-        <GestureIndicator
-          gesture={gestureState.gesture}
-          confidence={gestureState.confidence}
-        />
-      )}
+      {cameraEnabled && <GestureIndicator gesture={gestureState.gesture} confidence={gestureState.confidence} />}
 
       {/* Controls */}
       <div className="absolute bottom-4 right-4 z-20 flex gap-2">
         {!cameraEnabled ? (
-          <Button
-            variant="tech"
-            size="lg"
-            onClick={enableCamera}
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                Initializing
-              </>
-            ) : (
-              <>
-                <CameraIcon className="w-4 h-4" />
-                Enable Gesture Control
-              </>
-            )}
+          <Button variant="tech" size="sm" onClick={enableCamera} disabled={isLoading}>
+            {isLoading ? <><Loader2 className="w-3 h-3 animate-spin" /> Init...</> : <><CameraIcon className="w-3 h-3" /> Enable Gestures</>}
           </Button>
         ) : (
-          <Button variant="outline" size="default" onClick={resetView}>
-            <RotateCcw className="w-4 h-4" />
-            Reset
+          <Button variant="outline" size="sm" onClick={resetView}>
+            <RotateCcw className="w-3 h-3" /> Reset
           </Button>
         )}
       </div>
 
-      {/* Error Display */}
       {error && (
-        <div className="absolute bottom-4 left-4 z-20 glass-card rounded px-4 py-2">
-          <span className="text-xs font-mono text-muted-foreground">{error}</span>
+        <div className="absolute bottom-4 left-4 z-20 glass-card rounded px-3 py-1.5">
+          <span className="text-[10px] font-mono text-muted-foreground">{error}</span>
         </div>
       )}
-
-      {/* FPS Counter */}
-      {cameraEnabled && <FPSCounter />}
 
       {/* Gesture Instructions */}
       <AnimatePresence>
         {cameraEnabled && (
           <motion.div
-            className="absolute top-24 right-4 z-10 glass-card rounded-lg p-4 max-w-[200px]"
+            className="absolute top-20 right-4 z-10 glass-card rounded-lg p-3 max-w-[160px]"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
           >
-            <h4 className="text-xs font-mono uppercase tracking-wider mb-3 text-muted-foreground">Controls</h4>
-            <div className="space-y-2 text-xs font-mono">
-              <div className="flex items-center gap-3">
-                <span className="text-lg">✋</span>
-                <span className="text-muted-foreground">Open → Rotate</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="text-lg">🤏</span>
-                <span className="text-muted-foreground">Pinch → Zoom</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="text-lg">✊</span>
-                <span className="text-muted-foreground">Fist → Pause</span>
-              </div>
+            <h4 className="text-[10px] font-mono uppercase tracking-wider mb-2 text-muted-foreground">6 Gestures</h4>
+            <div className="space-y-1 text-[10px] font-mono">
+              <div className="flex items-center gap-2"><span>✋</span><span className="text-muted-foreground">Open → Rotate</span></div>
+              <div className="flex items-center gap-2"><span>🤏</span><span className="text-muted-foreground">Pinch → Zoom</span></div>
+              <div className="flex items-center gap-2"><span>☝️</span><span className="text-muted-foreground">Point → Select</span></div>
+              <div className="flex items-center gap-2"><span>✊</span><span className="text-muted-foreground">Fist → Pause</span></div>
+              <div className="flex items-center gap-2"><span>👍</span><span className="text-muted-foreground">Thumb → Approve</span></div>
+              <div className="flex items-center gap-2"><span>✌️</span><span className="text-muted-foreground">Peace → Mode</span></div>
             </div>
           </motion.div>
         )}
