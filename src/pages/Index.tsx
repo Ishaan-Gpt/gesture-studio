@@ -8,6 +8,7 @@ import FeaturesSection from '@/components/FeaturesSection';
 import UseCasesSection from '@/components/UseCasesSection';
 import PricingSection from '@/components/PricingSection';
 import Footer from '@/components/Footer';
+import OfferPopup from '@/components/OfferPopup';
 
 const Index = () => {
   return (
@@ -20,6 +21,9 @@ const Index = () => {
       
       {/* Navbar */}
       <Navbar />
+      
+      {/* Offer Popup */}
+      <OfferPopup />
       
       {/* Main Content */}
       <main className="relative z-10">

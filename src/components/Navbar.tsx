@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Menu, X, Hand, ArrowRight } from 'lucide-react';
+import { Menu, X, ArrowRight } from 'lucide-react';
 import { toast } from 'sonner';
 
 const Navbar = () => {
@@ -56,11 +56,13 @@ const Navbar = () => {
               onClick={() => scrollToSection('hero')}
               className="flex items-center gap-3 group"
             >
-              <div className="w-8 h-8 rounded-lg bg-foreground flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Hand className="w-4 h-4 text-background" />
-              </div>
+              <img 
+                src="/logo.png" 
+                alt="Heptact Logo" 
+                className="h-8 w-auto group-hover:scale-110 transition-transform"
+              />
               <span className="font-display font-bold text-lg tracking-tight hidden sm:block">
-                GESTURA
+                HEPTACT
               </span>
             </button>
 

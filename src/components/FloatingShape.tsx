@@ -77,11 +77,12 @@ const PremiumShape = () => {
 
 const FloatingShape = () => {
   return (
-    <div className="absolute inset-0 z-0">
+    <div className="absolute inset-0 z-0 flex items-center justify-center">
       <Canvas
-        camera={{ position: [0, 0, 7], fov: 50 }}
+        camera={{ position: [0, 0, 8], fov: 45 }}
         dpr={[1, 2]}
         gl={{ antialias: true, alpha: true }}
+        style={{ width: '100%', height: '100%' }}
       >
         <Suspense fallback={null}>
           <ambientLight intensity={0.4} />
