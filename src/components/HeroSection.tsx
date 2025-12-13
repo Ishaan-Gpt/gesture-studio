@@ -1,10 +1,81 @@
 import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import FloatingShape from './FloatingShape';
 import { ArrowRight, Play } from 'lucide-react';
 import { toast } from 'sonner';
 import gsap from 'gsap';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { Float, Environment } from '@react-three/drei';
+import { Suspense } from 'react';
+import { Mesh } from 'three';
+
+// Inline 3D shape for seamless integration
+const HeroShape = () => {
+  const torusRef = useRef<Mesh>(null);
+  const sphereRef = useRef<Mesh>(null);
+  const wireframeRef = useRef<Mesh>(null);
+
+  useFrame((state) => {
+    const t = state.clock.elapsedTime;
+    if (torusRef.current) {
+      torusRef.current.rotation.x = t * 0.15;
+      torusRef.current.rotation.y = t * 0.25;
+    }
+    if (sphereRef.current) {
+      sphereRef.current.rotation.y = t * 0.2;
+      sphereRef.current.position.y = Math.sin(t * 0.5) * 0.2;
+    }
+    if (wireframeRef.current) {
+      wireframeRef.current.rotation.y = -t * 0.1;
+      wireframeRef.current.rotation.x = t * 0.05;
+    }
+  });
+
+  return (
+    <Float speed={1.5} rotationIntensity={0.3} floatIntensity={0.8}>
+      <group position={[2, 0, 0]}>
+        <mesh ref={torusRef} scale={1.8}>
+          <torusKnotGeometry args={[1, 0.32, 128, 32]} />
+          <meshStandardMaterial
+            color="#ffffff"
+            metalness={0.95}
+            roughness={0.05}
+            envMapIntensity={2}
+          />
+        </mesh>
+        
+        <mesh ref={sphereRef} scale={0.7}>
+          <sphereGeometry args={[1, 32, 32]} />
+          <meshStandardMaterial
+            color="#ffffff"
+            metalness={0.7}
+            roughness={0.3}
+            envMapIntensity={1.5}
+          />
+        </mesh>
+
+        <mesh ref={wireframeRef} scale={3.5}>
+          <icosahedronGeometry args={[1, 2]} />
+          <meshBasicMaterial color="#ffffff" wireframe opacity={0.08} transparent />
+        </mesh>
+
+        {[0, 1, 2, 3, 4].map((i) => (
+          <mesh
+            key={i}
+            position={[
+              Math.cos((i * Math.PI * 2) / 5) * 3,
+              Math.sin((i * Math.PI * 2) / 5) * 0.6,
+              Math.sin((i * Math.PI * 2) / 5) * 3
+            ]}
+          >
+            <octahedronGeometry args={[0.1]} />
+            <meshStandardMaterial color="#ffffff" metalness={1} roughness={0} emissive="#ffffff" emissiveIntensity={0.1} />
+          </mesh>
+        ))}
+      </group>
+    </Float>
+  );
+};
 
 const HeroSection = () => {
   const heroRef = useRef<HTMLElement>(null);
@@ -14,18 +85,18 @@ const HeroSection = () => {
     const ctx = gsap.context(() => {
       gsap.timeline()
         .fromTo('.hero-line', 
-          { y: 60, opacity: 0, skewY: 3 },
-          { y: 0, opacity: 1, skewY: 0, duration: 1, stagger: 0.1, ease: 'power4.out' }
+          { y: 40, opacity: 0, skewY: 2 },
+          { y: 0, opacity: 1, skewY: 0, duration: 0.8, stagger: 0.08, ease: 'power4.out' }
         )
         .fromTo('.hero-subtext',
-          { y: 30, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' },
-          '-=0.5'
+          { y: 20, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.5, ease: 'power3.out' },
+          '-=0.4'
         )
         .fromTo('.hero-cta',
-          { y: 20, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.5, stagger: 0.1, ease: 'power3.out' },
-          '-=0.3'
+          { y: 15, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.4, stagger: 0.08, ease: 'power3.out' },
+          '-=0.2'
         );
     }, heroRef);
 
@@ -44,23 +115,36 @@ const HeroSection = () => {
     <section 
       ref={heroRef}
       id="hero" 
-      className="relative min-h-[calc(100vh-80px)] mt-20 flex items-center"
+      className="relative h-screen pt-20 overflow-hidden"
     >
-      {/* Ambient glow */}
-      <div className="absolute top-1/4 left-0 w-[400px] h-[400px] rounded-full bg-foreground/[0.02] blur-[100px]" />
-      <div className="absolute bottom-0 right-1/4 w-[300px] h-[300px] rounded-full bg-foreground/[0.03] blur-[80px]" />
+      {/* Full-screen 3D Canvas - seamlessly integrated */}
+      <div className="absolute inset-0 z-0">
+        <Canvas
+          camera={{ position: [0, 0, 10], fov: 50 }}
+          dpr={[1, 2]}
+          gl={{ antialias: true, alpha: true }}
+          style={{ background: 'transparent' }}
+        >
+          <Suspense fallback={null}>
+            <ambientLight intensity={0.3} />
+            <directionalLight position={[10, 10, 5]} intensity={1} color="#ffffff" />
+            <directionalLight position={[-5, -5, -5]} intensity={0.3} color="#ffffff" />
+            <spotLight position={[0, 10, 0]} intensity={0.4} angle={0.3} penumbra={1} />
+            <HeroShape />
+            <Environment preset="studio" />
+          </Suspense>
+        </Canvas>
+      </div>
 
-      {/* Main Content */}
-      <div className="relative z-10 container mx-auto px-6 lg:px-12">
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-          
-          {/* Left - Text */}
-          <div ref={textRef} className="order-2 lg:order-1">
+      {/* Content overlay */}
+      <div className="relative z-10 h-full flex items-center">
+        <div className="container mx-auto px-6 lg:px-12">
+          <div className="max-w-2xl">
             {/* Badge */}
-            <div className="hero-line overflow-hidden mb-6">
-              <motion.div className="inline-flex items-center gap-2 glass-card rounded-full px-4 py-2">
+            <div className="hero-line overflow-hidden mb-4">
+              <motion.div className="inline-flex items-center gap-2 glass-card rounded-full px-3 py-1.5">
                 <div className="w-1.5 h-1.5 rounded-full bg-foreground animate-pulse" />
-                <span className="text-[10px] font-mono uppercase tracking-[0.15em] text-muted-foreground">
+                <span className="text-[10px] font-mono uppercase tracking-[0.12em] text-muted-foreground">
                   Custom Components in 30 Hours
                 </span>
               </motion.div>
@@ -68,31 +152,31 @@ const HeroSection = () => {
 
             {/* Headline */}
             <div className="overflow-hidden mb-1">
-              <h1 className="hero-line text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold leading-[1] tracking-tight">
+              <h1 className="hero-line text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-bold leading-[1.1] tracking-tight">
                 WE BUILD
               </h1>
             </div>
             <div className="overflow-hidden mb-1">
-              <h1 className="hero-line text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold leading-[1] tracking-tight gradient-text">
+              <h1 className="hero-line text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-bold leading-[1.1] tracking-tight gradient-text">
                 GESTURE-DRIVEN
               </h1>
             </div>
-            <div className="overflow-hidden mb-6">
-              <h1 className="hero-line text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold leading-[1] tracking-tight">
+            <div className="overflow-hidden mb-5">
+              <h1 className="hero-line text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-bold leading-[1.1] tracking-tight">
                 3D EXPERIENCES
               </h1>
             </div>
 
             {/* Subheadline */}
-            <p className="hero-subtext text-sm md:text-base text-muted-foreground max-w-md mb-8 font-mono leading-relaxed">
-              Bespoke webcam-powered gesture components for brands that demand innovation. No hardware. Pure magic.
+            <p className="hero-subtext text-xs md:text-sm text-muted-foreground max-w-md mb-6 font-mono leading-relaxed">
+              Bespoke webcam-powered gesture components for brands that demand innovation.
             </p>
 
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row gap-3">
               <Button
                 variant="default"
-                size="lg"
+                size="default"
                 onClick={scrollToPricing}
                 className="hero-cta group"
               >
@@ -101,7 +185,7 @@ const HeroSection = () => {
               </Button>
               <Button 
                 variant="outline" 
-                size="lg"
+                size="default"
                 onClick={handleWatchShowreel}
                 className="hero-cta group"
               >
@@ -110,29 +194,12 @@ const HeroSection = () => {
               </Button>
             </div>
           </div>
-
-          {/* Right - 3D Shape */}
-          <div className="order-1 lg:order-2 relative h-[300px] sm:h-[350px] lg:h-[450px]">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, x: 30 }}
-              animate={{ opacity: 1, scale: 1, x: 0 }}
-              transition={{ delay: 0.2, duration: 1, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute inset-0"
-            >
-              <FloatingShape />
-              
-              {/* Decorative rings */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div className="w-[200px] h-[200px] sm:w-[280px] sm:h-[280px] lg:w-[350px] lg:h-[350px] border border-foreground/[0.05] rounded-full animate-pulse-subtle" />
-                <div className="absolute w-[260px] h-[260px] sm:w-[360px] sm:h-[360px] lg:w-[420px] lg:h-[420px] border border-foreground/[0.03] rounded-full animate-pulse-subtle" style={{ animationDelay: '1s' }} />
-              </div>
-            </motion.div>
-          </div>
         </div>
       </div>
 
-      {/* Gradient fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent z-10 pointer-events-none" />
+      {/* Subtle ambient elements */}
+      <div className="absolute top-1/3 left-1/4 w-[300px] h-[300px] rounded-full bg-foreground/[0.02] blur-[80px] pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/3 w-[200px] h-[200px] rounded-full bg-foreground/[0.015] blur-[60px] pointer-events-none" />
     </section>
   );
 };

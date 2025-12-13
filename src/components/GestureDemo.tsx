@@ -332,8 +332,15 @@ const GestureDemo = ({ title, description, modelType = 'product' }: GestureDemoP
         await camera.start();
         setCameraEnabled(true);
       }
-    } catch (err) {
-      setError('Camera access denied');
+    } catch (err: any) {
+      console.error('Camera error:', err);
+      if (err?.name === 'NotAllowedError') {
+        setError('Camera access denied. Please allow camera access in your browser settings.');
+      } else if (err?.name === 'NotFoundError') {
+        setError('No camera found. Please connect a camera.');
+      } else {
+        setError('Camera error: ' + (err?.message || 'Unknown error'));
+      }
     } finally {
       setIsLoading(false);
     }

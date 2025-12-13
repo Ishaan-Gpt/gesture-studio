@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Menu, X, ArrowRight } from 'lucide-react';
+import HeptagonLogo from './HeptagonLogo';
 import { toast } from 'sonner';
 
 const Navbar = () => {
@@ -56,11 +57,7 @@ const Navbar = () => {
               onClick={() => scrollToSection('hero')}
               className="flex items-center gap-3 group"
             >
-              <img 
-                src="/logo.png" 
-                alt="Heptact Logo" 
-                className="h-8 w-auto group-hover:scale-110 transition-transform"
-              />
+              <HeptagonLogo size={32} className="group-hover:scale-110 transition-transform" />
               <span className="font-display font-bold text-lg tracking-tight hidden sm:block">
                 HEPTACT
               </span>
