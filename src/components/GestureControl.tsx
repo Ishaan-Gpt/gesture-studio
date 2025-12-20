@@ -1,10 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { Hands, Results } from '@mediapipe/hands';
-import { Camera } from '@mediapipe/camera_utils';
 import { MousePointer2, Hand, Grab, MousePointerClick } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGesture } from '@/context/GestureContext';
+
+// Global types for MediaPipe (since we're using CDN)
+declare global {
+    interface Window {
+        Hands: any;
+        Camera: any;
+    }
+}
 
 // Fixed pointer ID for consistent pointer capture
 const GESTURE_POINTER_ID = 9999;
@@ -16,10 +22,11 @@ const GestureControl = () => {
 
     const videoRef = useRef<HTMLVideoElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const handsRef = useRef<Hands | null>(null);
-    const cameraRef = useRef<Camera | null>(null);
+    const handsRef = useRef<any | null>(null);
+    const cameraRef = useRef<any | null>(null);
 
     // Dual-buffer system for smooth interpolation
+    // ... (rest of refs)
     const targetPos = useRef({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
     const currentPos = useRef({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
     const animFrameId = useRef<number>(0);
@@ -38,9 +45,15 @@ const GestureControl = () => {
     useEffect(() => {
         if (isEnabled && !handsRef.current) {
             try {
-                const hands = new Hands({
+                // Use global constructor from CDN
+                const HandsLib = (window as any).Hands;
+                if (!HandsLib) {
+                    throw new Error("MediaPipe Hands library not loaded from CDN");
+                }
+
+                const hands = new HandsLib({
                     // CRITICAL: Hard version lock to prevent WASM crashes
-                    locateFile: (file) => `https://unpkg.com/@mediapipe/hands@0.4.1646424915/${file}`,
+                    locateFile: (file: string) => `https://unpkg.com/@mediapipe/hands@0.4.1646424915/${file}`,
                 });
                 hands.setOptions({
                     maxNumHands: 1,
@@ -60,15 +73,20 @@ const GestureControl = () => {
     // Camera with CRASH-SAFE LOOP
     useEffect(() => {
         if (isEnabled && videoRef.current && handsRef.current && !hasError) {
-            const camera = new Camera(videoRef.current, {
+            const CameraLib = (window as any).Camera;
+            if (!CameraLib) {
+                console.error("MediaPipe Camera library not loaded");
+                setHasError(true);
+                return;
+            }
+
+            const camera = new CameraLib(videoRef.current, {
                 onFrame: async () => {
                     if (handsRef.current && videoRef.current) {
                         try {
                             await handsRef.current.send({ image: videoRef.current });
                         } catch (e) {
                             console.error("Gesture Recognition Crash Prevented:", e);
-                            // Optional: Reset or back off?
-                            // For now, we just catch to prevent app crash
                         }
                     }
                 },
@@ -264,7 +282,7 @@ const GestureControl = () => {
     };
 
     // MediaPipe results
-    const onMediaPipe = useCallback((results: Results) => {
+    const onMediaPipe = useCallback((results: any) => {
         if (!results.multiHandLandmarks?.[0]) {
             gesture.current = 'none';
             landmarks.current = null;

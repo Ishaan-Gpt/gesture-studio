@@ -3,8 +3,6 @@ import { useEffect, useRef, useState, useCallback, Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Float, Environment, ContactShadows, useGLTF } from '@react-three/drei';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Hands, Results } from '@mediapipe/hands';
-import { Camera } from '@mediapipe/camera_utils';
 import { Button } from '@/components/ui/button';
 import { Camera as CameraIcon, Hand, RotateCcw, Loader2, VideoOff, MousePointer2 } from 'lucide-react';
 import * as THREE from 'three';
