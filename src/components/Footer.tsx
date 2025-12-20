@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Github, Twitter, Linkedin, Mail, Hand, ArrowRight } from 'lucide-react';
+import { Github, Twitter, Linkedin, Mail, ArrowRight } from 'lucide-react';
 import { toast } from 'sonner';
+import HeptagonLogo from './HeptagonLogo';
 
 const Footer = () => {
   const scrollToSection = (id: string) => {
@@ -33,14 +34,12 @@ const Footer = () => {
           <div className="md:col-span-2">
             <button 
               onClick={() => scrollToSection('hero')}
-              className="flex items-center gap-2 mb-4 group"
+              className="flex items-center gap-3 mb-4 group"
             >
-              <div className="p-2 rounded-lg bg-foreground group-hover:scale-110 transition-transform">
-                <Hand className="w-6 h-6 text-background" />
-              </div>
-              <span className="text-xl font-display font-bold">GESTURA</span>
+              <HeptagonLogo size={40} className="group-hover:scale-110 transition-transform" />
+              <span className="text-2xl font-display font-bold">HEPTACT</span>
             </button>
-            <p className="text-muted-foreground mb-6 max-w-sm">
+            <p className="text-base text-muted-foreground mb-6 max-w-sm">
               We craft bespoke gesture-controlled 3D experiences for brands that refuse to blend in. 
               Your vision, our expertise.
             </p>
@@ -61,12 +60,12 @@ const Footer = () => {
 
           {/* Links */}
           <div>
-            <h4 className="font-display font-semibold mb-4">Work</h4>
+            <h4 className="text-base font-display font-semibold mb-4">Work</h4>
             <ul className="space-y-3">
               <li>
                 <button 
                   onClick={() => scrollToSection('demos')}
-                  className="text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-base text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Live Demos
                 </button>
@@ -74,7 +73,7 @@ const Footer = () => {
               <li>
                 <button 
                   onClick={() => handleLinkClick('Case Studies')}
-                  className="text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-base text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Case Studies
                 </button>
@@ -82,7 +81,7 @@ const Footer = () => {
               <li>
                 <button 
                   onClick={() => handleLinkClick('Process')}
-                  className="text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-base text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Our Process
                 </button>
@@ -90,7 +89,7 @@ const Footer = () => {
               <li>
                 <button 
                   onClick={() => scrollToSection('features')}
-                  className="text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-base text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Technology
                 </button>
@@ -99,12 +98,12 @@ const Footer = () => {
           </div>
 
           <div>
-            <h4 className="font-display font-semibold mb-4">Company</h4>
+            <h4 className="text-base font-display font-semibold mb-4">Company</h4>
             <ul className="space-y-3">
               <li>
                 <button 
                   onClick={() => handleLinkClick('About Us')}
-                  className="text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-base text-muted-foreground hover:text-foreground transition-colors"
                 >
                   About Us
                 </button>
@@ -112,7 +111,7 @@ const Footer = () => {
               <li>
                 <button 
                   onClick={() => handleLinkClick('Careers')}
-                  className="text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-base text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Careers
                 </button>
@@ -120,7 +119,7 @@ const Footer = () => {
               <li>
                 <button 
                   onClick={() => scrollToSection('pricing')}
-                  className="text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-base text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Pricing
                 </button>
@@ -128,7 +127,7 @@ const Footer = () => {
               <li>
                 <button 
                   onClick={() => handleLinkClick('Contact')}
-                  className="text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-base text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Contact
                 </button>
@@ -139,8 +138,8 @@ const Footer = () => {
 
         {/* Bottom */}
         <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-border/50">
-          <p className="text-sm text-muted-foreground mb-4 md:mb-0">
-            © 2024 Gestura Agency. Crafted with precision.
+          <p className="text-base text-muted-foreground mb-4 md:mb-0">
+            © 2024 Heptact. Crafted with precision.
           </p>
           
           {/* Social Links */}

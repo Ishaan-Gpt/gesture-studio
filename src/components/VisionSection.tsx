@@ -1,123 +1,103 @@
-import { motion } from 'framer-motion';
-import { useInView } from 'framer-motion';
-import { useRef } from 'react';
-import GlassCard from './GlassCard';
-import { Button } from '@/components/ui/button';
-import { Clock, Target, Sparkles, ArrowRight } from 'lucide-react';
+"use client";
 
-const processSteps = [
+import { Hand, Rocket, Code, Zap, Sparkles } from "lucide-react";
+import RadialOrbitalTimeline from "@/components/ui/radial-orbital-timeline";
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
+
+// Heptact's process/timeline data
+const heptactTimelineData = [
   {
-    icon: Target,
-    title: 'Brief',
-    description: '30-min call. We get your vision.',
-    number: '01',
-  },
-  {
+    id: 1,
+    title: "Brief",
+    date: "Day 1-2",
+    content: "30-minute discovery call. We understand your vision, requirements, and brand identity.",
+    category: "Planning",
     icon: Sparkles,
-    title: 'Build',
-    description: 'Custom 3D + gestures. Your brand.',
-    number: '02',
+    relatedIds: [2],
+    status: "completed" as const,
+    energy: 100,
   },
   {
-    icon: Clock,
-    title: 'Ship',
-    description: 'Done in 30 hours. Integration-ready.',
-    number: '03',
+    id: 2,
+    title: "Build",
+    date: "Day 3-25",
+    content: "Our team crafts custom 3D elements and gesture interactions tailored to your brand.",
+    category: "Design",
+    icon: Code,
+    relatedIds: [1, 3],
+    status: "completed" as const,
+    energy: 90,
+  },
+  {
+    id: 3,
+    title: "Integrate",
+    date: "Day 26-28",
+    content: "Seamless integration with your existing tech stack. Clean, documented code.",
+    category: "Development",
+    icon: Hand,
+    relatedIds: [2, 4],
+    status: "in-progress" as const,
+    energy: 70,
+  },
+  {
+    id: 4,
+    title: "Test",
+    date: "Day 29",
+    content: "Cross-browser testing, gesture calibration, and performance optimization.",
+    category: "Testing",
+    icon: Zap,
+    relatedIds: [3, 5],
+    status: "in-progress" as const,
+    energy: 40,
+  },
+  {
+    id: 5,
+    title: "Ship",
+    date: "Day 30",
+    content: "Delivered in 30-96 hours. Production-ready, optimized, and fully tested.",
+    category: "Release",
+    icon: Rocket,
+    relatedIds: [4],
+    status: "pending" as const,
+    energy: 20,
   },
 ];
 
 const VisionSection = () => {
   const containerRef = useRef(null);
-  const isInView = useInView(containerRef, { once: true, margin: '-100px' });
-
-  const handleLearnMore = () => {
-    document.getElementById('demos')?.scrollIntoView({ behavior: 'smooth' });
-  };
+  const isInView = useInView(containerRef, { once: true, margin: "-200px" });
 
   return (
-    <section id="vision" className="relative py-24 overflow-hidden" ref={containerRef}>
-      <div className="relative z-10 container mx-auto px-6">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          {/* Left */}
-          <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-8 h-px bg-foreground" />
-              <span className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">How It Works</span>
-            </div>
-            
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold mb-6 leading-[1.1]">
-              CONCEPT TO
-              <br />
-              <span className="text-muted-foreground">COMPONENT</span>
-            </h2>
-            
-            <p className="text-sm text-muted-foreground mb-6 font-mono leading-relaxed max-w-sm">
-              Not a library. Your creative partner. Every build is custom.
-            </p>
+    <section id="vision" className="relative" ref={containerRef}>
+      {/* Header - reduced spacing from py-12 to py-8 */}
+      <div className="relative z-20 py-8 bg-black">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+          className="container mx-auto px-6 text-center"
+        >
+          <div className="inline-flex items-center gap-2 border border-white/10 rounded-full px-4 py-1.5 mb-6 bg-white/[0.02]">
+            <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/50">
+              How It Works
+            </span>
+          </div>
 
-            <Button 
-              variant="outline" 
-              size="default" 
-              onClick={handleLearnMore}
-              className="group"
-            >
-              See Examples
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </Button>
-          </motion.div>
-
-          {/* Right */}
-          <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-            className="space-y-3"
-          >
-            {processSteps.map((step, index) => (
-              <motion.div
-                key={step.title}
-                initial={{ opacity: 0, y: 20 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ delay: 0.3 + index * 0.1, duration: 0.5 }}
-              >
-                <GlassCard className="flex items-center gap-5 p-5 rounded-lg group hover:bg-foreground/[0.02] transition-colors">
-                  <span className="text-2xl font-display font-bold text-foreground/20">{step.number}</span>
-                  <div className="p-2 rounded-lg bg-foreground/5">
-                    <step.icon className="w-5 h-5 text-foreground" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-display font-bold text-base">{step.title}</h3>
-                    <p className="text-xs text-muted-foreground font-mono">{step.description}</p>
-                  </div>
-                </GlassCard>
-              </motion.div>
-            ))}
-
-            {/* Stats */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={isInView ? { opacity: 1 } : {}}
-              transition={{ delay: 0.7, duration: 0.6 }}
-              className="flex gap-6 pt-6"
-            >
-              {[
-                { value: '30h', label: 'Delivery' },
-                { value: '50+', label: 'Shipped' },
-                { value: '100%', label: 'Happy' },
-              ].map((stat) => (
-                <div key={stat.label} className="text-center">
-                  <div className="text-2xl font-display font-bold">{stat.value}</div>
-                  <div className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground mt-1">{stat.label}</div>
-                </div>
-              ))}
-            </motion.div>
-          </motion.div>
-        </div>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-4 text-white">
+            Concept to <span className="text-white/40">Component</span>
+          </h2>
+          <p className="text-lg text-white/50 max-w-2xl mx-auto mb-2">
+            Click nodes to explore our development process
+          </p>
+          <p className="text-xs text-white/30 font-mono">
+            Interactive • Auto-Rotating Timeline
+          </p>
+        </motion.div>
       </div>
+
+      {/* Orbital Timeline Component */}
+      <RadialOrbitalTimeline timelineData={heptactTimelineData} />
     </section>
   );
 };

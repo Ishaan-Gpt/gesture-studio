@@ -41,17 +41,17 @@ const FeaturesSection = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <div className="w-8 h-px bg-foreground" />
-            <span className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Deliverables</span>
-            <div className="w-8 h-px bg-foreground" />
+          <div className="flex items-center justify-center gap-3 mb-5">
+            <div className="w-12 h-px bg-foreground" />
+            <span className="text-xs font-mono uppercase tracking-widest text-muted-foreground">Deliverables</span>
+            <div className="w-12 h-px bg-foreground" />
           </div>
           
-          <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-5">
             PRECISION <span className="text-muted-foreground">CRAFTED</span>
           </h2>
 
-          <p className="text-sm text-muted-foreground max-w-lg mx-auto mb-6 font-mono">
+          <p className="text-base md:text-lg text-muted-foreground max-w-lg mx-auto mb-6 font-mono">
             Engineered for performance. Built for impact.
           </p>
 

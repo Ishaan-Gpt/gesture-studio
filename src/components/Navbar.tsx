@@ -1,13 +1,19 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Menu, X, ArrowRight } from 'lucide-react';
+import { Menu, X, ArrowRight, Hand } from 'lucide-react';
 import HeptagonLogo from './HeptagonLogo';
 import { toast } from 'sonner';
+import { useGesture } from '@/context/GestureContext';
+import { useTheme } from '@/components/DynamicThemeProvider';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { isEnabled, toggleGestureMode } = useGesture();
+  const { currentTheme } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -23,17 +29,17 @@ const Navbar = () => {
   };
 
   const handleStartProject = () => {
-    scrollToSection('pricing');
-    toast.success('Let\'s build something amazing!', { 
-      description: 'Choose a package that fits your needs.' 
+    scrollToSection('contact');
+    toast.success('Let\'s build something amazing!', {
+      description: 'Choose a package that fits your needs.'
     });
   };
 
   const navItems = [
-    { label: 'Work', id: 'demos' },
-    { label: 'Services', id: 'features' },
+    { label: 'Services', id: 'services' },
     { label: 'About', id: 'vision' },
-    { label: 'Pricing', id: 'pricing' },
+    { label: 'Use Cases', id: 'use-cases' },
+    { label: 'Contact', id: 'contact' },
   ];
 
   return (
@@ -42,15 +48,15 @@ const Navbar = () => {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          isScrolled ? 'py-3' : 'py-6'
-        }`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled ? 'py-3' : 'py-6'
+          }`}
       >
         <div className="container mx-auto px-6">
           <div
-            className={`glass-card rounded-full px-6 py-3 flex items-center justify-between transition-all duration-500 ${
-              isScrolled ? 'bg-background/80' : 'bg-background/40'
-            }`}
+            className={`glass-card rounded-full px-6 py-3 flex items-center justify-between transition-all duration-300 ${currentTheme === 'light'
+              ? isScrolled ? 'bg-white/90 backdrop-blur-xl shadow-lg' : 'bg-white/70 backdrop-blur-lg'
+              : isScrolled ? 'bg-background/80' : 'bg-background/40'
+              }`}
           >
             {/* Logo */}
             <button
@@ -58,7 +64,8 @@ const Navbar = () => {
               className="flex items-center gap-3 group"
             >
               <HeptagonLogo size={32} className="group-hover:scale-110 transition-transform" />
-              <span className="font-display font-bold text-lg tracking-tight hidden sm:block">
+              <span className={`font-display font-bold text-lg tracking-tight hidden sm:block ${currentTheme === 'light' ? 'text-black' : 'text-white'
+                }`}>
                 HEPTACT
               </span>
             </button>
@@ -69,16 +76,32 @@ const Navbar = () => {
                 <button
                   key={item.id}
                   onClick={() => scrollToSection(item.id)}
-                  className="text-sm font-mono uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors relative group"
+                  className={`text-sm font-mono uppercase tracking-widest transition-colors relative group ${currentTheme === 'light'
+                    ? 'text-black/60 hover:text-black'
+                    : 'text-muted-foreground hover:text-foreground'
+                    }`}
                 >
                   {item.label}
-                  <span className="absolute -bottom-1 left-0 w-0 h-px bg-foreground transition-all duration-300 group-hover:w-full" />
+                  <span className={`absolute -bottom-1 left-0 w-0 h-px transition-all duration-300 group-hover:w-full ${currentTheme === 'light' ? 'bg-black' : 'bg-foreground'
+                    }`} />
                 </button>
               ))}
             </div>
 
-            {/* CTA Button */}
+            {/* CTA Button & Gesture Toggle */}
             <div className="hidden md:flex items-center gap-4">
+              {/* Gesture Toggle with red/green */}
+              <div className="flex items-center gap-2 mr-2 border-r border-border pr-4">
+                <Hand className={`w-4 h-4 transition-colors ${isEnabled ? 'text-green-500' : 'text-red-500'
+                  }`} />
+                <Switch
+                  id="gesture-mode-nav"
+                  checked={isEnabled}
+                  onCheckedChange={toggleGestureMode}
+                  className="scale-75 data-[state=checked]:bg-green-500 data-[state=unchecked]:bg-red-500"
+                />
+              </div>
+
               <Button
                 variant="default"
                 size="sm"
@@ -128,6 +151,21 @@ const Navbar = () => {
                   {item.label}
                 </motion.button>
               ))}
+
+              {/* Mobile Gesture Toggle */}
+              <div className="flex items-center justify-between py-3 border-b border-border/50">
+                <div className="flex items-center gap-2">
+                  <Hand className={`w-4 h-4 transition-colors ${isEnabled ? 'text-green-500' : 'text-red-500'
+                    }`} />
+                  <span className="text-sm font-mono uppercase tracking-widest text-muted-foreground">Gesture Mode</span>
+                </div>
+                <Switch
+                  checked={isEnabled}
+                  onCheckedChange={toggleGestureMode}
+                  className="data-[state=checked]:bg-green-500 data-[state=unchecked]:bg-red-500"
+                />
+              </div>
+
               <Button
                 variant="default"
                 size="lg"

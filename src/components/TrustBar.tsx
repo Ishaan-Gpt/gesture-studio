@@ -1,37 +1,50 @@
+"use client";
+
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
+import { ScrollVelocityContainer, ScrollVelocityRow } from '@/components/ui/scroll-based-velocity';
 
 const TrustBar = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-50px' });
 
   return (
-    <section ref={ref} className="py-16 border-y border-border/30">
-      <div className="container mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="text-center"
+    <section ref={ref} className="py-20 border-y border-white/10 overflow-hidden">
+      <div className="container mx-auto px-6 mb-12">
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : {}}
+          className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/40 text-center"
         >
-          <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-muted-foreground mb-8">
-            Trusted by forward-thinking brands
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-8 md:gap-16 opacity-40">
-            {['ACME', 'VERTEX', 'AXIOM', 'NEXUS', 'PRISM'].map((brand, i) => (
-              <motion.span
-                key={brand}
-                initial={{ opacity: 0, y: 10 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ delay: 0.1 * i, duration: 0.4 }}
-                className="text-lg md:text-xl font-display font-bold tracking-wider"
-              >
-                {brand}
-              </motion.span>
-            ))}
-          </div>
-        </motion.div>
+          Trusted by forward-thinking brands
+        </motion.p>
       </div>
+
+      {/* Scroll-based velocity text - BIGGER and SLOWER */}
+      <ScrollVelocityContainer className="text-6xl md:text-8xl lg:text-9xl font-display font-bold text-white/10">
+        <ScrollVelocityRow baseVelocity={3} direction={1}>
+          <span className="mx-12">ACME</span>
+          <span className="mx-12">•</span>
+          <span className="mx-12">VERTEX</span>
+          <span className="mx-12">•</span>
+          <span className="mx-12">AXIOM</span>
+          <span className="mx-12">•</span>
+          <span className="mx-12">NEXUS</span>
+          <span className="mx-12">•</span>
+          <span className="mx-12">PRISM</span>
+          <span className="mx-12">•</span>
+        </ScrollVelocityRow>
+        <ScrollVelocityRow baseVelocity={3} direction={-1}>
+          <span className="mx-12 text-white/5">HEPTACT</span>
+          <span className="mx-12 text-white/5">•</span>
+          <span className="mx-12 text-white/5">GESTURE</span>
+          <span className="mx-12 text-white/5">•</span>
+          <span className="mx-12 text-white/5">3D</span>
+          <span className="mx-12 text-white/5">•</span>
+          <span className="mx-12 text-white/5">IMMERSIVE</span>
+          <span className="mx-12 text-white/5">•</span>
+        </ScrollVelocityRow>
+      </ScrollVelocityContainer>
     </section>
   );
 };

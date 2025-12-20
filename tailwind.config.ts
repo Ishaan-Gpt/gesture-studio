@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import tailwindcssAnimate from "tailwindcss-animate";
 
 export default {
   darkMode: ["class"],
@@ -104,7 +105,11 @@ export default {
         },
         marquee: {
           "0%": { transform: "translateX(0%)" },
-          "100%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(calc(-100% - var(--gap)))" },
+        },
+        "marquee-vertical": {
+          "0%": { transform: "translateY(0%)" },
+          "100%": { transform: "translateY(calc(-100% - var(--gap)))" },
         },
         "pulse-subtle": {
           "0%, 100%": { opacity: "1" },
@@ -120,7 +125,8 @@ export default {
         "slide-in-left": "slide-in-left 0.6s ease-out forwards",
         "slide-in-right": "slide-in-right 0.6s ease-out forwards",
         shimmer: "shimmer 2s linear infinite",
-        marquee: "marquee 25s linear infinite",
+        marquee: "marquee var(--duration) linear infinite",
+        "marquee-vertical": "marquee-vertical var(--duration) linear infinite",
         "pulse-subtle": "pulse-subtle 2s ease-in-out infinite",
       },
       backgroundImage: {
@@ -138,5 +144,5 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [tailwindcssAnimate],
 } satisfies Config;

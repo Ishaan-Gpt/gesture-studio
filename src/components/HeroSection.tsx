@@ -8,8 +8,11 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { Float, Environment } from '@react-three/drei';
 import { Suspense } from 'react';
 import { Mesh } from 'three';
+import { TextScramble } from '@/components/ui/text-scramble';
+import { Magnetic } from '@/components/ui/magnetic';
+import { Typewriter } from '@/components/ui/typography-effects';
 
-// Inline 3D shape for seamless integration
+// Original Three.js 3D shape - optimized for performance
 const HeroShape = () => {
   const torusRef = useRef<Mesh>(null);
   const sphereRef = useRef<Mesh>(null);
@@ -33,8 +36,8 @@ const HeroShape = () => {
 
   return (
     <Float speed={1.5} rotationIntensity={0.3} floatIntensity={0.8}>
-      <group position={[2, 0, 0]}>
-        <mesh ref={torusRef} scale={1.8}>
+      <group position={[4, 0, 0]}>
+        <mesh ref={torusRef} scale={1.5}>
           <torusKnotGeometry args={[1, 0.32, 128, 32]} />
           <meshStandardMaterial
             color="#ffffff"
@@ -43,7 +46,7 @@ const HeroShape = () => {
             envMapIntensity={2}
           />
         </mesh>
-        
+
         <mesh ref={sphereRef} scale={0.7}>
           <sphereGeometry args={[1, 32, 32]} />
           <meshStandardMaterial
@@ -79,24 +82,24 @@ const HeroShape = () => {
 
 const HeroSection = () => {
   const heroRef = useRef<HTMLElement>(null);
-  const textRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.timeline()
-        .fromTo('.hero-line', 
-          { y: 40, opacity: 0, skewY: 2 },
-          { y: 0, opacity: 1, skewY: 0, duration: 0.8, stagger: 0.08, ease: 'power4.out' }
-        )
+      const tl = gsap.timeline();
+
+      tl.fromTo('.hero-line',
+        { y: 40, opacity: 0, skewY: 2 },
+        { y: 0, opacity: 1, skewY: 0, duration: 0.8, stagger: 0.1, ease: 'power3.out' }
+      )
         .fromTo('.hero-subtext',
           { y: 20, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.5, ease: 'power3.out' },
+          { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' },
           '-=0.4'
         )
         .fromTo('.hero-cta',
           { y: 15, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.4, stagger: 0.08, ease: 'power3.out' },
-          '-=0.2'
+          { y: 0, opacity: 1, duration: 0.5, stagger: 0.1, ease: 'power3.out' },
+          '-=0.3'
         );
     }, heroRef);
 
@@ -104,7 +107,7 @@ const HeroSection = () => {
   }, []);
 
   const scrollToPricing = () => {
-    document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const handleWatchShowreel = () => {
@@ -112,94 +115,102 @@ const HeroSection = () => {
   };
 
   return (
-    <section 
+    <section
       ref={heroRef}
-      id="hero" 
-      className="relative h-screen pt-20 overflow-hidden"
+      id="hero"
+      className="relative h-screen pt-20 overflow-hidden flex items-center"
     >
-      {/* Full-screen 3D Canvas - seamlessly integrated */}
+      {/* Optimized 3D Background - Three.js */}
       <div className="absolute inset-0 z-0">
         <Canvas
           camera={{ position: [0, 0, 10], fov: 50 }}
-          dpr={[1, 2]}
-          gl={{ antialias: true, alpha: true }}
+          dpr={[1, 1.5]}
+          gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
           style={{ background: 'transparent' }}
         >
           <Suspense fallback={null}>
-            <ambientLight intensity={0.3} />
-            <directionalLight position={[10, 10, 5]} intensity={1} color="#ffffff" />
-            <directionalLight position={[-5, -5, -5]} intensity={0.3} color="#ffffff" />
-            <spotLight position={[0, 10, 0]} intensity={0.4} angle={0.3} penumbra={1} />
+            <ambientLight intensity={0.4} />
+            <directionalLight position={[10, 10, 5]} intensity={1.2} color="#ffffff" />
+            <directionalLight position={[-5, -5, -5]} intensity={0.5} color="#ffffff" />
             <HeroShape />
-            <Environment preset="studio" />
+            <Environment preset="city" />
           </Suspense>
         </Canvas>
       </div>
 
       {/* Content overlay */}
-      <div className="relative z-10 h-full flex items-center">
+      <div className="relative z-10 w-full">
         <div className="container mx-auto px-6 lg:px-12">
-          <div className="max-w-2xl">
+          <div className="max-w-3xl">
             {/* Badge */}
-            <div className="hero-line overflow-hidden mb-4">
-              <motion.div className="inline-flex items-center gap-2 glass-card rounded-full px-3 py-1.5">
-                <div className="w-1.5 h-1.5 rounded-full bg-foreground animate-pulse" />
-                <span className="text-[10px] font-mono uppercase tracking-[0.12em] text-muted-foreground">
-                  Custom Components in 30 Hours
+            <div className="hero-line overflow-hidden mb-6">
+              <motion.div className="inline-flex items-center gap-2 glass-card rounded-full px-4 py-1.5 border border-white/10 bg-white/5 backdrop-blur-md">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                </span>
+                <span className="text-[10px] font-mono uppercase tracking-widest text-white/80">
+                  v2.0 System Online
                 </span>
               </motion.div>
             </div>
 
-            {/* Headline */}
-            <div className="overflow-hidden mb-1">
-              <h1 className="hero-line text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-bold leading-[1.1] tracking-tight">
-                WE BUILD
+            {/* SEO Optimized Headline with Scramble Effect */}
+            <div className="mb-2">
+              <h1 className="hero-line text-4xl sm:text-5xl md:text-7xl font-display font-bold leading-[1.1] tracking-tight text-white">
+                <TextScramble text="COMMAND THE WEB" />
               </h1>
             </div>
-            <div className="overflow-hidden mb-1">
-              <h1 className="hero-line text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-bold leading-[1.1] tracking-tight gradient-text">
-                GESTURE-DRIVEN
-              </h1>
-            </div>
-            <div className="overflow-hidden mb-5">
-              <h1 className="hero-line text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-bold leading-[1.1] tracking-tight">
-                3D EXPERIENCES
+            <div className="mb-6">
+              <h1 className="hero-line text-4xl sm:text-5xl md:text-7xl font-display font-bold leading-[1.1] tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/50 drop-shadow-2xl">
+                <TextScramble text="HANDS-FREE" />
               </h1>
             </div>
 
-            {/* Subheadline */}
-            <p className="hero-subtext text-xs md:text-sm text-muted-foreground max-w-md mb-6 font-mono leading-relaxed">
-              Bespoke webcam-powered gesture components for brands that demand innovation.
+            {/* Subheadline with Typewriter */}
+            <p className="hero-subtext text-lg md:text-xl text-muted-foreground max-w-2xl mb-10 leading-relaxed font-light">
+              Experience the next evolution of browsing.
+              <span className="text-white font-medium"> No mouse. No touch. Just{' '}
+                <Typewriter
+                  words={['you', 'gestures', 'magic', 'innovation']}
+                  className="text-white"
+                  typingSpeed={100}
+                  deletingSpeed={60}
+                  delayBetweenWords={2000}
+                />{' '}
+              </span>
+              We build immersive, webcam-powered 3D interfaces for forward-thinking brands.
             </p>
 
-            {/* CTAs */}
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Button
-                variant="default"
-                size="default"
-                onClick={scrollToPricing}
-                className="hero-cta group"
-              >
-                Start Your Project
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Button>
-              <Button 
-                variant="outline" 
-                size="default"
-                onClick={handleWatchShowreel}
-                className="hero-cta group"
-              >
-                <Play className="w-4 h-4" />
-                Watch Showreel
-              </Button>
+            {/* CTAs with Magnetic Effect */}
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Magnetic strength={0.4}>
+                <Button
+                  variant="default"
+                  size="lg"
+                  onClick={scrollToPricing}
+                  className="hero-cta h-14 px-8 rounded-full bg-white text-black hover:bg-gray-200 hover:shadow-2xl hover:shadow-white/20 transition-all text-base font-semibold"
+                >
+                  View Plans
+                  <ArrowRight className="ml-2 w-4 h-4" />
+                </Button>
+              </Magnetic>
+
+              <Magnetic strength={0.4}>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  onClick={handleWatchShowreel}
+                  className="hero-cta h-14 px-8 rounded-full border-white/20 bg-white/5 hover:bg-white/10 hover:shadow-xl hover:shadow-white/10 backdrop-blur-sm transition-all text-base"
+                >
+                  <Play className="mr-2 w-4 h-4" />
+                  Showreel
+                </Button>
+              </Magnetic>
             </div>
           </div>
         </div>
       </div>
-
-      {/* Subtle ambient elements */}
-      <div className="absolute top-1/3 left-1/4 w-[300px] h-[300px] rounded-full bg-foreground/[0.02] blur-[80px] pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/3 w-[200px] h-[200px] rounded-full bg-foreground/[0.015] blur-[60px] pointer-events-none" />
     </section>
   );
 };

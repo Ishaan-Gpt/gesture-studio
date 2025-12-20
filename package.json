@@ -11,6 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emailjs/browser": "^4.4.1",
     "@hookform/resolvers": "^3.10.0",
     "@mediapipe/camera_utils": "^0.3.1675466862",
     "@mediapipe/hands": "^0.4.1675469240",
@@ -43,6 +44,8 @@
     "@radix-ui/react-tooltip": "^1.2.7",
     "@react-three/drei": "^9.122.0",
     "@react-three/fiber": "^8.18.0",
+    "@splinetool/react-spline": "^4.1.0",
+    "@studio-freight/lenis": "^1.0.42",
     "@tanstack/react-query": "^5.83.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -53,6 +56,7 @@
     "gsap": "^3.14.2",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.462.0",
+    "motion": "^12.23.26",
     "next-themes": "^0.3.0",
     "react": "^18.3.1",
     "react-day-picker": "^8.10.1",

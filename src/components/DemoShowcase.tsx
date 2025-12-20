@@ -46,17 +46,17 @@ const DemoShowcase = () => {
           transition={{ duration: 0.6 }}
           className="text-center"
         >
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <div className="w-8 h-px bg-foreground" />
-            <span className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Live Demos</span>
-            <div className="w-8 h-px bg-foreground" />
+          <div className="flex items-center justify-center gap-3 mb-5">
+            <div className="w-12 h-px bg-foreground" />
+            <span className="text-xs font-mono uppercase tracking-widest text-muted-foreground">Live Demos</span>
+            <div className="w-12 h-px bg-foreground" />
           </div>
-          
-          <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">
+
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-5">
             SEE IT IN ACTION
           </h2>
-          
-          <p className="text-sm text-muted-foreground max-w-md mx-auto font-mono">
+
+          <p className="text-base md:text-lg text-muted-foreground max-w-md mx-auto font-mono">
             Enable camera. Control with hands. Zero hardware.
           </p>
         </motion.div>
@@ -74,11 +74,10 @@ const DemoShowcase = () => {
             <button
               key={demo.id}
               onClick={() => setActiveDemo(index)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-300 font-mono text-xs uppercase tracking-wider ${
-                activeDemo === index
-                  ? 'glass-card border-foreground/20 text-foreground'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-lg transition-all duration-300 font-mono text-sm uppercase tracking-wider ${activeDemo === index
+                ? 'glass-card border-foreground/20 text-foreground'
+                : 'text-muted-foreground hover:text-foreground'
+                }`}
             >
               <demo.icon className="w-3 h-3" />
               <span className="hidden sm:inline">{demo.title}</span>
@@ -118,7 +117,7 @@ const DemoShowcase = () => {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.4 }}
-            className="aspect-video rounded-lg overflow-hidden border border-border"
+            className="h-[500px] w-full rounded-lg overflow-hidden border border-border"
           >
             <GestureDemo
               title={demos[activeDemo].title}
@@ -132,9 +131,8 @@ const DemoShowcase = () => {
               <button
                 key={index}
                 onClick={() => setActiveDemo(index)}
-                className={`w-6 h-1 rounded-full transition-all duration-300 ${
-                  activeDemo === index ? 'bg-foreground' : 'bg-muted'
-                }`}
+                className={`w-6 h-1 rounded-full transition-all duration-300 ${activeDemo === index ? 'bg-foreground' : 'bg-muted'
+                  }`}
               />
             ))}
           </div>
@@ -147,7 +145,7 @@ const DemoShowcase = () => {
         transition={{ delay: 0.6, duration: 0.6 }}
         className="container mx-auto px-6 mt-8"
       >
-        <p className="text-center text-[10px] text-muted-foreground font-mono uppercase tracking-wider">
+        <p className="text-center text-xs text-muted-foreground font-mono uppercase tracking-wider">
           ⦿ Processed locally • No data sent
         </p>
       </motion.div>
