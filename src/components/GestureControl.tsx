@@ -12,6 +12,7 @@ const GESTURE_POINTER_ID = 9999;
 const GestureControl = () => {
     const { isEnabled, setGestureState } = useGesture();
     const [isCameraReady, setIsCameraReady] = useState(false);
+    const [hasError, setHasError] = useState(false);
 
     const videoRef = useRef<HTMLVideoElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -33,42 +34,61 @@ const GestureControl = () => {
     const lastHovered = useRef<Element | null>(null);
     const landmarks = useRef<any[] | null>(null);
 
-    // Initialize MediaPipe
+    // Initialize MediaPipe with ANTI-CRASH HARD VERSION LOCK
     useEffect(() => {
         if (isEnabled && !handsRef.current) {
-            const hands = new Hands({
-                locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`,
-            });
-            hands.setOptions({
-                maxNumHands: 1,
-                modelComplexity: 0,
-                minDetectionConfidence: 0.6,
-                minTrackingConfidence: 0.6,
-            });
-            hands.onResults(onMediaPipe);
-            handsRef.current = hands;
+            try {
+                const hands = new Hands({
+                    // CRITICAL: Hard version lock to prevent WASM crashes
+                    locateFile: (file) => `https://unpkg.com/@mediapipe/hands@0.4.1646424915/${file}`,
+                });
+                hands.setOptions({
+                    maxNumHands: 1,
+                    modelComplexity: 0, // Lite model for performance
+                    minDetectionConfidence: 0.5,
+                    minTrackingConfidence: 0.5,
+                });
+                hands.onResults(onMediaPipe);
+                handsRef.current = hands;
+            } catch (error) {
+                console.error("Critical MediaPipe Initialization Error:", error);
+                setHasError(true);
+            }
         }
     }, [isEnabled]);
 
-    // Camera
+    // Camera with CRASH-SAFE LOOP
     useEffect(() => {
-        if (isEnabled && videoRef.current && handsRef.current) {
+        if (isEnabled && videoRef.current && handsRef.current && !hasError) {
             const camera = new Camera(videoRef.current, {
                 onFrame: async () => {
-                    await handsRef.current?.send({ image: videoRef.current! });
+                    if (handsRef.current && videoRef.current) {
+                        try {
+                            await handsRef.current.send({ image: videoRef.current });
+                        } catch (e) {
+                            console.error("Gesture Recognition Crash Prevented:", e);
+                            // Optional: Reset or back off?
+                            // For now, we just catch to prevent app crash
+                        }
+                    }
                 },
                 width: 320,
                 height: 240,
             });
             cameraRef.current = camera;
-            camera.start().then(() => setIsCameraReady(true));
+            camera.start()
+                .then(() => setIsCameraReady(true))
+                .catch(e => {
+                    console.error("Camera Start Error:", e);
+                    setHasError(true);
+                });
         } else {
             cameraRef.current?.stop();
             cameraRef.current = null;
             setIsCameraReady(false);
         }
         return () => { cameraRef.current?.stop(); };
-    }, [isEnabled]);
+    }, [isEnabled, hasError]);
 
     // Create PointerEvent - THE KEY FOR FRAMER MOTION
     const createPointerEvent = (type: string, x: number, y: number, pressure: number = 0.5) => {
@@ -93,40 +113,46 @@ const GestureControl = () => {
 
     // 60fps animation loop
     useEffect(() => {
-        if (!isEnabled) {
+        if (!isEnabled || hasError) {
             cancelAnimationFrame(animFrameId.current);
             return;
         }
 
         const loop = () => {
-            // Smooth interpolation (lerp)
-            const lerp = 0.25;
-            currentPos.current.x += (targetPos.current.x - currentPos.current.x) * lerp;
-            currentPos.current.y += (targetPos.current.y - currentPos.current.y) * lerp;
+            try {
+                // Smooth interpolation (lerp)
+                const lerp = 0.25;
+                currentPos.current.x += (targetPos.current.x - currentPos.current.x) * lerp;
+                currentPos.current.y += (targetPos.current.y - currentPos.current.y) * lerp;
 
-            const x = currentPos.current.x;
-            const y = currentPos.current.y;
-            const g = gesture.current;
+                const x = currentPos.current.x;
+                const y = currentPos.current.y;
+                const g = gesture.current;
 
-            // Process based on gesture
-            if (g === 'point' || g === 'none') {
-                processHover(x, y);
-            } else if (g === 'grab') {
-                processGrab(x, y);
-            } else if (g === 'scroll') {
-                processScroll();
+                // Process based on gesture
+                if (g === 'point' || g === 'none') {
+                    processHover(x, y);
+                } else if (g === 'grab') {
+                    processGrab(x, y);
+                } else if (g === 'scroll') {
+                    processScroll();
+                }
+
+                setGestureState({ gesture: g, position: { x, y }, confidence: 0.9 });
+
+                if (landmarks.current) drawHand(landmarks.current);
+
+                animFrameId.current = requestAnimationFrame(loop);
+            } catch (e) {
+                console.error("Animation Loop Error:", e);
+                // Recover by requesting next frame anyway
+                animFrameId.current = requestAnimationFrame(loop);
             }
-
-            setGestureState({ gesture: g, position: { x, y }, confidence: 0.9 });
-
-            if (landmarks.current) drawHand(landmarks.current);
-
-            animFrameId.current = requestAnimationFrame(loop);
         };
 
         animFrameId.current = requestAnimationFrame(loop);
         return () => cancelAnimationFrame(animFrameId.current);
-    }, [isEnabled, setGestureState]);
+    }, [isEnabled, setGestureState, hasError]);
 
     // Hover processing
     const processHover = (x: number, y: number) => {
@@ -381,7 +407,7 @@ const GestureControl = () => {
                                         <Icon className="w-3 h-3 text-white/70" />
                                     </div>
                                     <span className="text-xs text-white">{label}</span>
-                                    <span className="text-[9px] text-white/40 ml-auto">{hint}</span>
+                                    <span className="text-xs text-white/40 ml-auto">{hint}</span>
                                 </div>
                             ))}
                         </div>
@@ -391,24 +417,42 @@ const GestureControl = () => {
 
             <canvas
                 ref={canvasRef}
-                className={`fixed inset-0 z-[9997] pointer-events-none transition-opacity duration-200 ${isEnabled ? 'opacity-100' : 'opacity-0'}`}
+                className={`fixed inset-0 z-[9997] pointer-events-none transition-opacity duration-200 ${isEnabled && isCameraReady ? 'opacity-100' : 'opacity-0'}`}
             />
 
             <video ref={videoRef} className="hidden" playsInline />
 
             <AnimatePresence>
-                {isEnabled && !isCameraReady && (
+                {isEnabled && !isCameraReady && !hasError && (
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed bottom-8 right-8 z-[10000] bg-black/80 backdrop-blur px-5 py-2.5 rounded-full flex items-center gap-3 border border-white/10"
+                        className="fixed inset-0 z-[10000] bg-black/90 backdrop-blur-md flex flex-col items-center justify-center"
                     >
-                        <div className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-                        <span className="text-sm text-white/80">Loading...</span>
+                        <div className="relative">
+                            <div className="w-16 h-16 border-4 border-white/20 border-t-white rounded-full animate-spin mb-4" />
+                            <div className="absolute inset-0 flex items-center justify-center">
+                                <Hand className="w-6 h-6 text-white/80" />
+                            </div>
+                        </div>
+                        <h3 className="text-xl font-display font-medium text-white mb-2">Initializing Gesture System</h3>
+                        <p className="text-sm text-white/50 font-mono">Loading Neural Networks...</p>
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            {hasError && (
+                <div className="fixed bottom-8 right-8 z-[10000] bg-red-900/90 backdrop-blur px-6 py-4 rounded-lg border border-red-500/50 flex items-center gap-4 max-w-md">
+                    <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center shrink-0">
+                        <span className="text-red-200 text-xl">!</span>
+                    </div>
+                    <div>
+                        <h4 className="text-white font-medium mb-1">Gesture System Unavailable</h4>
+                        <p className="text-sm text-white/60">Could not identify camera or load AI models. Please reload or check permissions.</p>
+                    </div>
+                </div>
+            )}
         </>
     );
 };
