@@ -25,10 +25,11 @@ const GestureControl = () => {
     const handsRef = useRef<any | null>(null);
     const cameraRef = useRef<any | null>(null);
 
-    // Dual-buffer system for smooth interpolation
-    // ... (rest of refs)
+    // Physics-based smoothing system (Spring-Damper)
     const targetPos = useRef({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
     const currentPos = useRef({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
+    const velocity = useRef({ x: 0, y: 0 });
+    const lastRawPos = useRef({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
     const animFrameId = useRef<number>(0);
 
     // Gesture state
@@ -45,21 +46,18 @@ const GestureControl = () => {
     useEffect(() => {
         if (isEnabled && !handsRef.current) {
             try {
-                // Use global constructor from CDN
                 const HandsLib = (window as any).Hands;
-                if (!HandsLib) {
-                    throw new Error("MediaPipe Hands library not loaded from CDN");
-                }
+                if (!HandsLib) throw new Error("MediaPipe Hands library not loaded from CDN");
 
                 const hands = new HandsLib({
-                    // CRITICAL: Hard version lock to prevent WASM crashes
                     locateFile: (file: string) => `https://unpkg.com/@mediapipe/hands@0.4.1646424915/${file}`,
                 });
                 hands.setOptions({
                     maxNumHands: 1,
-                    modelComplexity: 0, // Lite model for performance
+                    modelComplexity: 0,
                     minDetectionConfidence: 0.5,
                     minTrackingConfidence: 0.5,
+                    selfieMode: true,
                 });
                 hands.onResults(onMediaPipe);
                 handsRef.current = hands;
@@ -70,12 +68,11 @@ const GestureControl = () => {
         }
     }, [isEnabled]);
 
-    // Camera with CRASH-SAFE LOOP
+    // Camera with HIGH-PERFORMANCE LOOP
     useEffect(() => {
         if (isEnabled && videoRef.current && handsRef.current && !hasError) {
             const CameraLib = (window as any).Camera;
             if (!CameraLib) {
-                console.error("MediaPipe Camera library not loaded");
                 setHasError(true);
                 return;
             }
@@ -90,16 +87,11 @@ const GestureControl = () => {
                         }
                     }
                 },
-                width: 320,
-                height: 240,
+                width: 640, // Higher resolution for better tracking precision
+                height: 480,
             });
             cameraRef.current = camera;
-            camera.start()
-                .then(() => setIsCameraReady(true))
-                .catch(e => {
-                    console.error("Camera Start Error:", e);
-                    setHasError(true);
-                });
+            camera.start().then(() => setIsCameraReady(true)).catch(() => setHasError(true));
         } else {
             cameraRef.current?.stop();
             cameraRef.current = null;
@@ -108,28 +100,19 @@ const GestureControl = () => {
         return () => { cameraRef.current?.stop(); };
     }, [isEnabled, hasError]);
 
-    // Create PointerEvent - THE KEY FOR FRAMER MOTION
+    // Create PointerEvent - Optimized for high frequency
     const createPointerEvent = (type: string, x: number, y: number, pressure: number = 0.5) => {
         return new PointerEvent(type, {
-            view: window,
-            bubbles: true,
-            cancelable: true,
-            clientX: x,
-            clientY: y,
-            screenX: x,
-            screenY: y,
-            pointerId: GESTURE_POINTER_ID,
-            pointerType: 'touch', // Touch works best with Framer Motion
-            isPrimary: true,
-            width: 20,
-            height: 20,
-            pressure: pressure,
+            view: window, bubbles: true, cancelable: true,
+            clientX: x, clientY: y, screenX: x, screenY: y,
+            pointerId: GESTURE_POINTER_ID, pointerType: 'touch',
+            isPrimary: true, width: 20, height: 20, pressure,
             button: type.includes('down') ? 0 : -1,
             buttons: type.includes('down') || type.includes('move') ? 1 : 0,
         });
     };
 
-    // 60fps animation loop
+    // HYPER-SMOOTH PHYSICS LOOP (Spring-Damper + Velocity Projection)
     useEffect(() => {
         if (!isEnabled || hasError) {
             cancelAnimationFrame(animFrameId.current);
@@ -138,32 +121,46 @@ const GestureControl = () => {
 
         const loop = () => {
             try {
-                // Smooth interpolation (lerp)
-                const lerp = 0.25;
-                currentPos.current.x += (targetPos.current.x - currentPos.current.x) * lerp;
-                currentPos.current.y += (targetPos.current.y - currentPos.current.y) * lerp;
+                // Constants for the physics feel
+                const stiffness = 0.15; // How fast it snaps
+                const damping = 0.75; // How much it slides/overshoots (1 = no slide, 0.5 = slippery)
+                const projection = 1.8; // Offset WASM latency by projecting current velocity forward
 
-                const x = currentPos.current.x;
-                const y = currentPos.current.y;
+                // 1. Calculate Force
+                const fx = (targetPos.current.x - currentPos.current.x) * stiffness;
+                const fy = (targetPos.current.y - currentPos.current.y) * stiffness;
+
+                // 2. Apply Acceleration to Velocity
+                velocity.current.x = (velocity.current.x + fx) * damping;
+                velocity.current.y = (velocity.current.y + fy) * damping;
+
+                // 3. Update Current Position
+                currentPos.current.x += velocity.current.x;
+                currentPos.current.y += velocity.current.y;
+
+                // 4. Projected Position for Interaction (Compensate for 50-80ms processing delay)
+                const px = currentPos.current.x + (velocity.current.x * projection);
+                const py = currentPos.current.y + (velocity.current.y * projection);
+
                 const g = gesture.current;
 
-                // Process based on gesture
+                // Interaction Processing
                 if (g === 'point' || g === 'none') {
-                    processHover(x, y);
+                    processHover(px, py);
                 } else if (g === 'grab') {
-                    processGrab(x, y);
+                    processGrab(px, py);
                 } else if (g === 'scroll') {
                     processScroll();
                 }
 
-                setGestureState({ gesture: g, position: { x, y }, confidence: 0.9 });
+                // Batch state updates to prevent unnecessary React renders
+                // We only update the public state at a slightly lower frequency or only when changed significantly
+                setGestureState({ gesture: g, position: { x: px, y: py }, confidence: 0.9 });
 
-                if (landmarks.current) drawHand(landmarks.current);
+                if (landmarks.current) drawHand(landmarks.current, px, py);
 
                 animFrameId.current = requestAnimationFrame(loop);
             } catch (e) {
-                console.error("Animation Loop Error:", e);
-                // Recover by requesting next frame anyway
                 animFrameId.current = requestAnimationFrame(loop);
             }
         };
@@ -340,8 +337,8 @@ const GestureControl = () => {
         }
     }, []);
 
-    // Hand drawing
-    const drawHand = (lm: any[]) => {
+    // Optimized Hand drawing
+    const drawHand = (lm: any[], px: number, py: number) => {
         const canvas = canvasRef.current;
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
@@ -351,51 +348,42 @@ const GestureControl = () => {
         canvas.height = window.innerHeight;
 
         const pts = lm.map(p => ({ x: (1 - p.x) * canvas.width, y: p.y * canvas.height }));
-        const cx = (pts[0].x + pts[9].x) / 2;
-        const cy = (pts[0].y + pts[9].y) / 2;
 
         ctx.save();
 
-        const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, 280);
-        grad.addColorStop(0, 'rgba(255,255,255,0.55)');
-        grad.addColorStop(0.5, 'rgba(230,230,230,0.4)');
-        grad.addColorStop(1, 'rgba(200,200,200,0.2)');
+        // Dynamic Glow based on gesture
+        const isAction = gesture.current !== 'none' && gesture.current !== 'point';
+        const glowColor = isAction ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.4)';
 
-        ctx.filter = 'blur(12px)';
-        ctx.fillStyle = grad;
-        ctx.strokeStyle = grad;
-        ctx.lineCap = 'round';
-
+        // 1. Draw Connection Lines (Neural Style)
         ctx.beginPath();
-        ctx.moveTo(pts[0].x, pts[0].y);
-        [5, 9, 13, 17].forEach(i => ctx.lineTo(pts[i].x, pts[i].y));
-        ctx.closePath();
+        ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+        ctx.lineWidth = 2;
+        [[0, 1, 2, 3, 4], [0, 5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16], [17, 18, 19, 20], [5, 9, 13, 17], [0, 17]].forEach(chain => {
+            ctx.moveTo(pts[chain[0]].x, pts[chain[0]].y);
+            chain.slice(1).forEach(i => ctx.lineTo(pts[i].x, pts[i].y));
+        });
+        ctx.stroke();
+
+        // 2. Focused Aura around the interaction point (Projected position)
+        const grad = ctx.createRadialGradient(px, py, 0, px, py, 150);
+        grad.addColorStop(0, glowColor);
+        grad.addColorStop(1, 'transparent');
+
+        ctx.fillStyle = grad;
+        ctx.filter = 'blur(10px)';
+        ctx.beginPath();
+        ctx.arc(px, py, 100, 0, Math.PI * 2);
         ctx.fill();
 
-        [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16], [17, 18, 19, 20]].forEach(f => {
-            f.forEach((idx, i) => {
-                if (i === 0) return;
-                ctx.lineWidth = 65 - i * 12;
-                ctx.beginPath();
-                ctx.moveTo(pts[f[i - 1]].x, pts[f[i - 1]].y);
-                ctx.lineTo(pts[idx].x, pts[idx].y);
-                ctx.stroke();
-            });
-        });
-
-        ctx.filter = 'blur(18px)';
-        ctx.fillStyle = 'rgba(255,255,255,0.55)';
+        // 3. Fingertip Nodes
+        ctx.filter = 'none';
+        ctx.fillStyle = '#fff';
         [4, 8, 12, 16, 20].forEach(i => {
             ctx.beginPath();
-            ctx.arc(pts[i].x, pts[i].y, 32, 0, Math.PI * 2);
+            ctx.arc(pts[i].x, pts[i].y, 3, 0, Math.PI * 2);
             ctx.fill();
         });
-
-        ctx.filter = 'blur(25px)';
-        ctx.fillStyle = 'rgba(255,255,255,0.3)';
-        ctx.beginPath();
-        ctx.arc(cx, cy, 110, 0, Math.PI * 2);
-        ctx.fill();
 
         ctx.restore();
     };

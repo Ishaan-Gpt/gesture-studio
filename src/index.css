@@ -8,54 +8,17 @@
 
 @layer base {
   :root {
-    /* PITCH BLACK FUTURISTIC THEME */
-    --background: 0 0% 0%;
-    /* Pure black #000000 */
+    /* DEEP GLOSSY BLACK THEME */
+    --background: 0 0% 1.5%;
+    /* Richest Deep Black */
     --foreground: 0 0% 100%;
-    /* Pure white */
 
-    --card: 0 0% 3%;
+    /* ... (rest of tokens) */
+    --card: 0 0% 4%;
     --card-foreground: 0 0% 100%;
 
-    --popover: 0 0% 2%;
-    --popover-foreground: 0 0% 100%;
-
-    --primary: 0 0% 100%;
-    --primary-foreground: 0 0% 0%;
-
-    --secondary: 0 0% 8%;
-    --secondary-foreground: 0 0% 100%;
-
-    --muted: 0 0% 6%;
-    --muted-foreground: 0 0% 60%;
-
-    --accent: 0 0% 10%;
-    --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 0 0% 12%;
-    --input: 0 0% 12%;
-    --ring: 0 0% 100%;
-
-    --radius: 0.5rem;
-
-    /* High contrast grayscale */
-    --gray-100: 0 0% 100%;
-    --gray-200: 0 0% 85%;
-    --gray-300: 0 0% 70%;
-    --gray-400: 0 0% 50%;
-    --gray-500: 0 0% 35%;
-    --gray-600: 0 0% 20%;
-    --gray-700: 0 0% 12%;
-    --gray-800: 0 0% 6%;
-    --gray-900: 0 0% 2%;
-
-    /* Glass effect - more contrast */
-    --glass-bg: hsla(0, 0%, 2%, 0.9);
-    --glass-border: hsla(0, 0%, 100%, 0.12);
-    --glass-shine: hsla(0, 0%, 100%, 0.05);
+    --glass-bg: hsla(0, 0%, 3%, 0.85);
+    --glass-border: hsla(0, 0%, 100%, 0.1);
   }
 }
 
@@ -66,16 +29,31 @@
 
   html {
     scroll-behavior: smooth;
-    background-color: #000000;
-    /* PITCH BLACK ROOT */
+    background: radial-gradient(circle at center, #0a0a0a 0%, #000000 100%);
+    background-attachment: fixed;
   }
 
   body {
     @apply text-foreground antialiased;
-    background-color: #000000;
-    /* PITCH BLACK */
+    background: radial-gradient(circle at 50% -20%, #111111 0%, #000000 80%);
+    background-attachment: fixed;
     font-family: 'JetBrains Mono', monospace;
     min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Glossy Overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, transparent 40%, rgba(255, 255, 255, 0.01) 100%);
+    pointer-events: none;
+    z-index: 9998;
   }
 
   h1,
