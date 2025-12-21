@@ -301,9 +301,11 @@ const GestureControl = () => {
         const isIndex = indexUp && !middleUp && !ringUp && !pinkyUp;
         const isOpenPalm = indexUp && middleUp && ringUp && pinkyUp;
         const isFist = !indexUp && !middleUp && !ringUp && !pinkyUp;
-        const isPinch = Math.hypot(lm[4].x - lm[8].x, lm[4].y - lm[8].y) < 0.04;
 
-        // Update target position - NO MANUAL FLIP (already handled by selfieMode or desired one-to-one)
+        // RELAXED PINCH: Increased threshold from 0.04 to 0.08 for easier clicking
+        const isPinch = Math.hypot(lm[4].x - lm[8].x, lm[4].y - lm[8].y) < 0.08;
+
+        // Update target position
         targetPos.current.x = lm[8].x * window.innerWidth;
         targetPos.current.y = lm[8].y * window.innerHeight;
 
@@ -312,14 +314,30 @@ const GestureControl = () => {
             gesture.current = 'click';
             const x = currentPos.current.x;
             const y = currentPos.current.y;
-            const el = document.elementFromPoint(x, y);
+
+            // FUZZY CLICK: Search in a small radius to catch nearby buttons
+            const getFuzzyTarget = (x: number, y: number) => {
+                const offsets = [
+                    [0, 0], [10, 0], [-10, 0], [0, 10], [0, -10],
+                    [7, 7], [-7, -7], [7, -7], [-7, 7]
+                ];
+                for (const [ox, oy] of offsets) {
+                    const el = document.elementFromPoint(x + ox, y + oy);
+                    if (el && (el.tagName === 'BUTTON' || el.tagName === 'A' || el.closest('button') || el.closest('a'))) {
+                        return el;
+                    }
+                }
+                return document.elementFromPoint(x, y);
+            };
+
+            const el = getFuzzyTarget(x, y);
             if (el) {
                 el.dispatchEvent(createPointerEvent('pointerdown', x, y, 1));
                 el.dispatchEvent(createPointerEvent('pointerup', x, y, 0));
                 el.dispatchEvent(new MouseEvent('click', { bubbles: true, clientX: x, clientY: y }));
             }
             clickCooldown.current = true;
-            setTimeout(() => { clickCooldown.current = false; }, 300);
+            setTimeout(() => { clickCooldown.current = false; }, 400); // Slightly longer cooldown for stability
         } else if (isOpenPalm) {
             gesture.current = 'grab';
             scrollSpeed.current = 1;
