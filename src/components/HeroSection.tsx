@@ -158,28 +158,28 @@ const HeroSection = () => {
             {/* SEO Optimized Headline with Scramble Effect */}
             <div className="mb-2">
               <h1 className="hero-line text-4xl sm:text-5xl md:text-7xl font-display font-bold leading-[1.1] tracking-tight text-white">
-                <TextScramble text="COMMAND THE WEB" />
+                <TextScramble text="THE GESTURE AGENCY" />
               </h1>
             </div>
             <div className="mb-6">
               <h1 className="hero-line text-4xl sm:text-5xl md:text-7xl font-display font-bold leading-[1.1] tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/50 drop-shadow-2xl">
-                <TextScramble text="HANDS-FREE" />
+                <TextScramble text="BEYOND THE MOUSE" />
               </h1>
             </div>
 
             {/* Subheadline with Typewriter */}
             <p className="hero-subtext text-lg md:text-xl text-muted-foreground max-w-2xl mb-10 leading-relaxed font-light">
-              Experience the next evolution of browsing.
-              <span className="text-white font-medium"> No mouse. No touch. Just{' '}
+              We design the future of web interaction.
+              <span className="text-white font-medium"> No sensors. No hardware. Just{' '}
                 <Typewriter
-                  words={['you', 'gestures', 'magic', 'innovation']}
+                  words={['pure AI', 'precision', 'hand gestures', 'immersion']}
                   className="text-white"
                   typingSpeed={100}
                   deletingSpeed={60}
                   delayBetweenWords={2000}
                 />{' '}
               </span>
-              We build immersive, webcam-powered 3D interfaces for forward-thinking brands.
+              Heptact engineers premium, hardware-free gesture interfaces that turn static websites into interactive 3D masterpieces.
             </p>
 
             {/* CTAs with Magnetic Effect */}

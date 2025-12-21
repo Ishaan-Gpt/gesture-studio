@@ -303,8 +303,8 @@ const GestureControl = () => {
         const isFist = !indexUp && !middleUp && !ringUp && !pinkyUp;
         const isPinch = Math.hypot(lm[4].x - lm[8].x, lm[4].y - lm[8].y) < 0.04;
 
-        // Update target position
-        targetPos.current.x = (1 - lm[8].x) * window.innerWidth;
+        // Update target position - NO MANUAL FLIP (already handled by selfieMode or desired one-to-one)
+        targetPos.current.x = lm[8].x * window.innerWidth;
         targetPos.current.y = lm[8].y * window.innerHeight;
 
         // Determine gesture
@@ -347,7 +347,7 @@ const GestureControl = () => {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
-        const pts = lm.map(p => ({ x: (1 - p.x) * canvas.width, y: p.y * canvas.height }));
+        const pts = lm.map(p => ({ x: p.x * canvas.width, y: p.y * canvas.height }));
 
         ctx.save();
 

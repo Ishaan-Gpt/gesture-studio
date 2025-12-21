@@ -32,7 +32,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           {/* Brand */}
           <div className="md:col-span-2">
-            <button 
+            <button
               onClick={() => scrollToSection('hero')}
               className="flex items-center gap-3 mb-4 group"
             >
@@ -40,10 +40,11 @@ const Footer = () => {
               <span className="text-2xl font-display font-bold">HEPTACT</span>
             </button>
             <p className="text-base text-muted-foreground mb-6 max-w-sm">
-              We craft bespoke gesture-controlled 3D experiences for brands that refuse to blend in. 
-              Your vision, our expertise.
+              We engineer the next generation of touchless web interaction.
+              Hardware-free, AI-powered, and designed for the elite.
+              The future beyond the mouse.
             </p>
-            
+
             {/* Newsletter */}
             <form onSubmit={handleSubscribe} className="flex gap-2">
               <Input
@@ -63,7 +64,7 @@ const Footer = () => {
             <h4 className="text-base font-display font-semibold mb-4">Work</h4>
             <ul className="space-y-3">
               <li>
-                <button 
+                <button
                   onClick={() => scrollToSection('demos')}
                   className="text-base text-muted-foreground hover:text-foreground transition-colors"
                 >
@@ -71,7 +72,7 @@ const Footer = () => {
                 </button>
               </li>
               <li>
-                <button 
+                <button
                   onClick={() => handleLinkClick('Case Studies')}
                   className="text-base text-muted-foreground hover:text-foreground transition-colors"
                 >
@@ -79,7 +80,7 @@ const Footer = () => {
                 </button>
               </li>
               <li>
-                <button 
+                <button
                   onClick={() => handleLinkClick('Process')}
                   className="text-base text-muted-foreground hover:text-foreground transition-colors"
                 >
@@ -87,7 +88,7 @@ const Footer = () => {
                 </button>
               </li>
               <li>
-                <button 
+                <button
                   onClick={() => scrollToSection('features')}
                   className="text-base text-muted-foreground hover:text-foreground transition-colors"
                 >
@@ -101,7 +102,7 @@ const Footer = () => {
             <h4 className="text-base font-display font-semibold mb-4">Company</h4>
             <ul className="space-y-3">
               <li>
-                <button 
+                <button
                   onClick={() => handleLinkClick('About Us')}
                   className="text-base text-muted-foreground hover:text-foreground transition-colors"
                 >
@@ -109,7 +110,7 @@ const Footer = () => {
                 </button>
               </li>
               <li>
-                <button 
+                <button
                   onClick={() => handleLinkClick('Careers')}
                   className="text-base text-muted-foreground hover:text-foreground transition-colors"
                 >
@@ -117,7 +118,7 @@ const Footer = () => {
                 </button>
               </li>
               <li>
-                <button 
+                <button
                   onClick={() => scrollToSection('pricing')}
                   className="text-base text-muted-foreground hover:text-foreground transition-colors"
                 >
@@ -125,7 +126,7 @@ const Footer = () => {
                 </button>
               </li>
               <li>
-                <button 
+                <button
                   onClick={() => handleLinkClick('Contact')}
                   className="text-base text-muted-foreground hover:text-foreground transition-colors"
                 >
@@ -141,7 +142,7 @@ const Footer = () => {
           <p className="text-base text-muted-foreground mb-4 md:mb-0">
             © 2024 Heptact. Crafted with precision.
           </p>
-          
+
           {/* Social Links */}
           <div className="flex items-center gap-4">
             <motion.button
