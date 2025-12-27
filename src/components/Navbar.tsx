@@ -53,7 +53,7 @@ const Navbar = () => {
       >
         <div className="container mx-auto px-6">
           <div
-            className={`glass-card rounded-full px-6 py-3 flex items-center justify-between transition-all duration-300 ${currentTheme === 'light'
+            className={`glass-card rounded px-6 py-3 flex items-center justify-between transition-all duration-300 ${currentTheme === 'light'
               ? isScrolled ? 'bg-white/90 backdrop-blur-xl shadow-lg' : 'bg-white/70 backdrop-blur-lg'
               : isScrolled ? 'bg-background/80' : 'bg-background/40'
               }`}
@@ -76,7 +76,7 @@ const Navbar = () => {
                 <button
                   key={item.id}
                   onClick={() => scrollToSection(item.id)}
-                  className={`text-sm font-mono uppercase tracking-widest transition-colors relative group ${currentTheme === 'light'
+                  className={`text-sm uppercase tracking-wider transition-colors relative group ${currentTheme === 'light'
                     ? 'text-black/60 hover:text-black'
                     : 'text-muted-foreground hover:text-foreground'
                     }`}
@@ -106,10 +106,9 @@ const Navbar = () => {
                 variant="default"
                 size="sm"
                 onClick={handleStartProject}
-                className="font-mono uppercase tracking-wider text-xs group"
+                className="uppercase tracking-wider text-xs"
               >
                 Start Project
-                <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
               </Button>
             </div>
 
@@ -138,7 +137,7 @@ const Navbar = () => {
             transition={{ duration: 0.3 }}
             className="fixed top-24 left-0 right-0 z-40 px-6 md:hidden"
           >
-            <div className="glass-card rounded-2xl p-6 space-y-4">
+            <div className="glass-card rounded p-6 space-y-4">
               {navItems.map((item, index) => (
                 <motion.button
                   key={item.id}
@@ -146,7 +145,7 @@ const Navbar = () => {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1 }}
                   onClick={() => scrollToSection(item.id)}
-                  className="block w-full text-left py-3 text-lg font-mono uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors border-b border-border/50 last:border-0"
+                  className="block w-full text-left py-3 text-lg uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors border-b border-border/50 last:border-0"
                 >
                   {item.label}
                 </motion.button>
@@ -157,7 +156,7 @@ const Navbar = () => {
                 <div className="flex items-center gap-2">
                   <Hand className={`w-4 h-4 transition-colors ${isEnabled ? 'text-green-500' : 'text-red-500'
                     }`} />
-                  <span className="text-sm font-mono uppercase tracking-widest text-muted-foreground">Gesture Mode</span>
+                  <span className="text-sm uppercase tracking-wider text-muted-foreground">Gesture Mode</span>
                 </div>
                 <Switch
                   checked={isEnabled}
@@ -170,10 +169,9 @@ const Navbar = () => {
                 variant="default"
                 size="lg"
                 onClick={handleStartProject}
-                className="w-full mt-4 font-mono uppercase tracking-wider group"
+                className="w-full mt-4 uppercase tracking-wider"
               >
                 Start Project
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Button>
             </div>
           </motion.div>

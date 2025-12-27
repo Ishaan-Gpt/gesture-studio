@@ -214,7 +214,7 @@ const ServiceCard = ({ service, index }: { service: typeof services[0]; index: n
                                     transition={{ delay: 0.1 + i * 0.05 }}
                                     className="flex items-center gap-3"
                                 >
-                                    <div className="w-5 h-5 rounded-full border border-white/20 flex items-center justify-center">
+                                    <div className="w-5 h-5 flex items-center justify-center">
                                         <Check className="w-3 h-3 text-white/60" />
                                     </div>
                                     <span className="text-sm font-mono text-white/70">{feature}</span>
@@ -225,11 +225,10 @@ const ServiceCard = ({ service, index }: { service: typeof services[0]; index: n
                         <Button
                             variant="outline"
                             size="lg"
-                            className="group rounded-full border-white/20 bg-transparent hover:bg-white hover:text-black transition-all duration-300"
+                            className="group rounded border-white/20 bg-transparent hover:bg-white hover:text-black transition-all duration-300"
                             onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
                         >
                             Get Started
-                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                         </Button>
                     </div>
 
@@ -307,24 +306,15 @@ const ServicesSection = () => {
                     transition={{ duration: 0.6 }}
                     className="text-center"
                 >
-                    <div className="inline-flex items-center gap-2 border border-white/10 rounded-full px-4 py-1.5 mb-6 bg-white/[0.02]">
-                        <span className="relative flex h-2 w-2">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
-                        </span>
-                        <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/50">
-                            Our Services
-                        </span>
-                    </div>
+                    <span className="text-sm uppercase tracking-[0.3em] text-white/40 mb-6 block">
+                        What We Do
+                    </span>
 
                     <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-4 text-white">
-                        What We <span className="text-white/40">Build</span>
+                        Our <span className="text-white/40">Services</span>
                     </h2>
-                    <p className="text-lg text-white/50 max-w-2xl mx-auto mb-4">
+                    <p className="text-lg text-white/50 max-w-2xl mx-auto">
                         Four ways to bring gesture control to your digital experience
-                    </p>
-                    <p className="text-sm text-white/30 font-mono">
-                        Scroll to explore →
                     </p>
                 </motion.div>
             </div>

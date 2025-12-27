@@ -61,8 +61,8 @@ const LoadingAnimation = ({ onComplete }: { onComplete?: () => void }) => {
 
         {/* Text Loading & Progress */}
         <div className="flex flex-col items-center gap-4 w-64">
-          <div className="flex items-center justify-between w-full text-xs font-mono uppercase tracking-widest text-muted-foreground">
-            <span>System Init</span>
+          <div className="flex items-center justify-between w-full text-xs uppercase tracking-wider text-muted-foreground">
+            <span>Loading</span>
             <span>{Math.round(progress)}%</span>
           </div>
 
@@ -77,11 +77,11 @@ const LoadingAnimation = ({ onComplete }: { onComplete?: () => void }) => {
           </div>
 
           <motion.div
-            className="flex items-center gap-1 text-[10px] font-mono text-muted-foreground/50"
+            className="flex items-center gap-1 text-[10px] text-muted-foreground/50"
             animate={{ opacity: [0.5, 1, 0.5] }}
             transition={{ duration: 1, repeat: Infinity }}
           >
-            ESTABLISHING CONNECTION...
+            Preparing your experience...
           </motion.div>
         </div>
       </div>

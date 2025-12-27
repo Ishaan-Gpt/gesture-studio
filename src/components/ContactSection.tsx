@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,7 +6,16 @@ import { Textarea } from '@/components/ui/textarea';
 import { Calendar, Mail, MessageSquare, ArrowRight, CheckCircle2, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import GlassCard from './GlassCard';
-import emailjs from '@emailjs/browser';
+import { submitContactForm } from '@/lib/formService';
+
+// Declare Calendly on window
+declare global {
+    interface Window {
+        Calendly?: {
+            initPopupWidget: (options: { url: string }) => void;
+        };
+    }
+}
 
 const ContactSection = () => {
     const containerRef = useRef(null);
@@ -34,55 +43,14 @@ const ContactSection = () => {
         setIsSubmitting(true);
 
         try {
-            // EmailJS Configuration
-            // Replace these with your actual EmailJS credentials
-            const SERVICE_ID = 'YOUR_SERVICE_ID';
-            const TEMPLATE_ID = 'YOUR_TEMPLATE_ID';
-            const PUBLIC_KEY = 'YOUR_PUBLIC_KEY';
-
-            // If you haven't set up EmailJS yet, it will show setup instructions
-            if (SERVICE_ID === 'YOUR_SERVICE_ID') {
-                toast.info('EmailJS Setup Required', {
-                    description: 'Please configure your EmailJS credentials in ContactSection.tsx'
-                });
-                setIsSubmitting(false);
-
-                // For now, log the form data
-                console.log('Form Data:', formData);
-
-                // Simulate success
-                setTimeout(() => {
-                    toast.success('Message received!', {
-                        description: 'We will get back to you within 24 hours.'
-                    });
-                    // Reset form
-                    setFormData({
-                        name: '',
-                        email: '',
-                        projectType: 'Web Application',
-                        pricingPlan: 'Not sure yet',
-                        message: ''
-                    });
-                }, 500);
-                return;
-            }
-
-            // Send email using EmailJS
-            const result = await emailjs.send(
-                SERVICE_ID,
-                TEMPLATE_ID,
-                {
-                    from_name: formData.name,
-                    from_email: formData.email,
-                    project_type: formData.projectType,
-                    pricing_plan: formData.pricingPlan,
-                    message: formData.message,
-                    to_email: 'your-email@example.com', // Your receiving email
-                },
-                PUBLIC_KEY
-            );
-
-            console.log('Email sent successfully:', result);
+            // Save to Firebase Firestore
+            await submitContactForm({
+                name: formData.name,
+                email: formData.email,
+                company: formData.projectType,
+                message: `Plan: ${formData.pricingPlan}\n\n${formData.message}`,
+                plan: formData.pricingPlan
+            });
 
             toast.success('Message sent successfully!', {
                 description: 'We will get back to you within 24 hours.'
@@ -98,7 +66,7 @@ const ContactSection = () => {
             });
 
         } catch (error) {
-            console.error('Email send error:', error);
+            console.error('Form submission error:', error);
             toast.error('Failed to send message', {
                 description: 'Please try again or contact us directly at hello@heptact.com'
             });
@@ -108,9 +76,15 @@ const ContactSection = () => {
     };
 
     const handleSchedule = () => {
-        // Replace with your actual Calendly link
-        toast.info('Opening Scheduler...', { description: 'Redirecting to calendar booking.' });
-        window.open('https://calendly.com/your-link', '_blank');
+        // Use Calendly popup widget
+        if (window.Calendly) {
+            window.Calendly.initPopupWidget({
+                url: 'https://calendly.com/ishaangupta011205?hide_landing_page_details=1&hide_gdpr_banner=1&text_color=000000&primary_color=d3d3d3'
+            });
+        } else {
+            // Fallback to new window
+            window.open('https://calendly.com/ishaangupta011205', '_blank');
+        }
     };
 
     return (
@@ -131,8 +105,8 @@ const ContactSection = () => {
                         <Mail className="w-3 h-3 text-muted-foreground" />
                         <span className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Get in Touch</span>
                     </div>
-                    <h2 className="text-3xl md:text-5xl font-display font-bold mb-4">
-                        Ready to <span className="gradient-text">Collaborate?</span>
+                    <h2 className="text-3xl md:text-5xl font-display font-bold mb-4 text-white">
+                        Ready to Connect
                     </h2>
                     <p className="text-sm md:text-base text-muted-foreground max-w-lg mx-auto font-mono">
                         Start your project or schedule a call with our engineering team.

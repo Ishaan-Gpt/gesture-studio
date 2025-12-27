@@ -43,20 +43,20 @@ const FeaturesSection = () => {
         >
           <div className="flex items-center justify-center gap-3 mb-5">
             <div className="w-12 h-px bg-foreground" />
-            <span className="text-xs font-mono uppercase tracking-widest text-muted-foreground">Deliverables</span>
+            <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Deliverables</span>
             <div className="w-12 h-px bg-foreground" />
           </div>
-          
+
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-5">
             PRECISION <span className="text-muted-foreground">CRAFTED</span>
           </h2>
 
-          <p className="text-base md:text-lg text-muted-foreground max-w-lg mx-auto mb-6 font-mono">
+          <p className="text-base md:text-lg text-muted-foreground max-w-lg mx-auto mb-6">
             Engineered for performance. Built for impact.
           </p>
 
           <Button variant="outline" size="default" onClick={handleGetStarted} className="group">
-            Get Started <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            Get Started
           </Button>
         </motion.div>
 
@@ -77,7 +77,7 @@ const FeaturesSection = () => {
                 <h3 className={`font-display font-bold mb-1 ${feature.size === 'large' ? 'text-xl' : 'text-sm'}`}>
                   {feature.title}
                 </h3>
-                <p className={`text-muted-foreground font-mono ${feature.size === 'large' ? 'text-xs' : 'text-[10px]'}`}>
+                <p className={`text-muted-foreground ${feature.size === 'large' ? 'text-xs' : 'text-[10px]'}`}>
                   {feature.description}
                 </p>
               </GlassCard>

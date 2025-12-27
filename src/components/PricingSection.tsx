@@ -82,9 +82,8 @@ const PricingSection = () => {
           className="text-center mb-16"
         >
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 border border-black/10 rounded-full px-4 py-2 mb-8 bg-black/[0.02]">
-            <Sparkles className="w-4 h-4 text-black/50" />
-            <span className="text-xs font-mono uppercase tracking-[0.3em] text-black/50">
+          <div className="inline-flex items-center gap-2 border border-black/10 rounded px-4 py-2 mb-8 bg-black/[0.02]">
+            <span className="text-xs uppercase tracking-[0.2em] text-black/50">
               Launch Pricing
             </span>
           </div>
@@ -106,7 +105,7 @@ const PricingSection = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.2 + index * 0.1, duration: 0.6 }}
-              className={`relative rounded-2xl p-8 ${plan.popular
+              className={`relative rounded p-8 ${plan.popular
                 ? 'bg-black text-white border-2 border-black scale-105 shadow-2xl'
                 : 'bg-white text-black border border-black/10'
                 }`}
@@ -114,17 +113,15 @@ const PricingSection = () => {
               {/* Popular badge */}
               {plan.popular && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                  <div className="flex items-center gap-1 bg-white text-black px-4 py-1 rounded-full text-xs font-mono uppercase tracking-wider">
-                    <Crown className="w-3 h-3" />
+                  <div className="flex items-center gap-1 bg-white text-black px-4 py-1 rounded text-xs uppercase tracking-wider">
                     Most Popular
                   </div>
                 </div>
               )}
 
               {/* Discount badge */}
-              <div className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-bold mb-4 ${plan.popular ? 'bg-white/20 text-white' : 'bg-red-500 text-white'
+              <div className={`inline-flex items-center gap-1 rounded px-3 py-1 text-xs font-bold mb-4 ${plan.popular ? 'bg-white/20 text-white' : 'bg-red-500 text-white'
                 }`}>
-                <Zap className="w-3 h-3" />
                 {plan.discount}
               </div>
 
@@ -161,13 +158,12 @@ const PricingSection = () => {
                 variant={plan.popular ? 'secondary' : 'default'}
                 size="lg"
                 onClick={handleGetInTouch}
-                className={`w-full group rounded-full ${plan.popular
+                className={`w-full group rounded ${plan.popular
                   ? 'bg-white text-black hover:bg-white/90'
                   : 'bg-black text-white hover:bg-black/90'
                   }`}
               >
                 {plan.cta}
-                <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
             </motion.div>
           ))}
@@ -187,9 +183,8 @@ const PricingSection = () => {
             variant="outline"
             size="lg"
             onClick={handleGetInTouch}
-            className="rounded-full border-black/20 text-black hover:bg-black hover:text-white"
+            className="rounded border-black/20 text-black hover:bg-black hover:text-white"
           >
-            <Star className="w-4 h-4 mr-2" />
             Get Custom Quote
           </Button>
         </motion.div>

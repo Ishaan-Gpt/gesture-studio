@@ -1,0 +1,28 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Contacts collection - anyone can submit, but can't read/modify others
+    match /contacts/{contactId} {
+      allow create: if true;  // Allow contact form submissions
+      allow read, update, delete: if false;  // No one can read/modify via client
+    }
+    
+    // Newsletter collection - anyone can subscribe, but can't read/modify
+    match /newsletter/{subscriberId} {
+      allow create: if true;  // Allow newsletter signups
+      allow read, update, delete: if false;  // No one can read/modify via client
+    }
+    
+    // Pricing inquiries - anyone can submit
+    match /pricing_inquiries/{inquiryId} {
+      allow create: if true;
+      allow read, update, delete: if false;
+    }
+    
+    // Deny everything else by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -416,7 +416,7 @@ const GestureControl = () => {
                         exit={{ opacity: 0, x: 20 }}
                         className="fixed top-24 right-5 z-[9999] rounded-xl p-4 w-48 border border-white/20 backdrop-blur-xl bg-black/60"
                     >
-                        <h4 className="text-[10px] font-mono uppercase tracking-widest text-white/60 mb-3 border-b border-white/10 pb-2">
+                        <h4 className="text-[10px] uppercase tracking-wider text-white/60 mb-3 border-b border-white/10 pb-2">
                             Gestures
                         </h4>
                         <div className="space-y-2">
@@ -460,8 +460,8 @@ const GestureControl = () => {
                                 <Hand className="w-6 h-6 text-white/80" />
                             </div>
                         </div>
-                        <h3 className="text-xl font-display font-medium text-white mb-2">Initializing Gesture System</h3>
-                        <p className="text-sm text-white/50 font-mono">Loading Neural Networks...</p>
+                        <h3 className="text-xl font-display font-medium text-white mb-2">Starting Camera</h3>
+                        <p className="text-sm text-white/50">Getting things ready...</p>
                     </motion.div>
                 )}
             </AnimatePresence>

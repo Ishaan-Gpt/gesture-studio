@@ -1,8 +1,31 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Syne:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Hide Spline watermark and styling */
+.spline-container a,
+.spline-container>div>a,
+.spline-container canvas+a,
+.spline-container canvas~a,
+.spline-container [style*="position: absolute"],
+.spline-container a[href*="spline"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Spline iframe wrapper */
+.spline-wrapper {
+  overflow: hidden;
+}
+
+.spline-wrapper iframe {
+  border: none;
+  background: transparent !important;
+}
 
 
 
@@ -37,7 +60,7 @@
     @apply text-foreground antialiased;
     background: radial-gradient(circle at 50% -20%, #111111 0%, #000000 80%);
     background-attachment: fixed;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     min-height: 100vh;
     position: relative;
     overflow-x: hidden;
@@ -62,8 +85,8 @@
   h4,
   h5,
   h6 {
-    font-family: 'Syne', sans-serif;
-    letter-spacing: -0.02em;
+    font-family: 'Playfair Display', Georgia, serif;
+    letter-spacing: -0.01em;
   }
 }
 

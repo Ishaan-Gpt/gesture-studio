@@ -1,26 +1,43 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Github, Twitter, Linkedin, Mail, ArrowRight } from 'lucide-react';
+import { Github, Twitter, Linkedin, Mail, ArrowRight, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import HeptagonLogo from './HeptagonLogo';
+import { subscribeNewsletter } from '@/lib/formService';
 
 const Footer = () => {
+  const [email, setEmail] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const scrollToSection = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success('Subscribed!', { description: 'You\'ll receive our latest updates and case studies.' });
+    if (!email) return;
+
+    setIsSubmitting(true);
+    try {
+      await subscribeNewsletter({ email });
+      toast.success('Subscribed!', { description: 'You\'ll receive our latest updates and case studies.' });
+      setEmail('');
+    } catch (error) {
+      console.error('Newsletter subscription error:', error);
+      toast.error('Failed to subscribe', { description: 'Please try again.' });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleLinkClick = (linkName: string) => {
     toast.info(`${linkName}`, { description: 'Page coming soon!' });
   };
 
-  const handleSocialClick = (platform: string) => {
-    toast.info(`Opening ${platform}...`, { description: 'Redirecting to our profile.' });
+  const handleSocialClick = (platform: string, url: string) => {
+    window.open(url, '_blank');
   };
 
   return (
@@ -32,7 +49,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           {/* Brand */}
           <div className="md:col-span-2">
-            <button 
+            <button
               onClick={() => scrollToSection('hero')}
               className="flex items-center gap-3 mb-4 group"
             >
@@ -40,20 +57,22 @@ const Footer = () => {
               <span className="text-2xl font-display font-bold">HEPTACT</span>
             </button>
             <p className="text-base text-muted-foreground mb-6 max-w-sm">
-              We craft bespoke gesture-controlled 3D experiences for brands that refuse to blend in. 
+              We craft bespoke gesture-controlled 3D experiences for brands that refuse to blend in.
               Your vision, our expertise.
             </p>
-            
+
             {/* Newsletter */}
             <form onSubmit={handleSubscribe} className="flex gap-2">
               <Input
                 type="email"
                 placeholder="Enter your email"
                 required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="bg-muted/50 border-border/50 focus:border-foreground"
               />
-              <Button type="submit" variant="default">
-                <ArrowRight className="w-4 h-4" />
+              <Button type="submit" variant="default" disabled={isSubmitting}>
+                {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowRight className="w-4 h-4" />}
               </Button>
             </form>
           </div>
@@ -63,7 +82,7 @@ const Footer = () => {
             <h4 className="text-base font-display font-semibold mb-4">Work</h4>
             <ul className="space-y-3">
               <li>
-                <button 
+                <button
                   onClick={() => scrollToSection('demos')}
                   className="text-base text-muted-foreground hover:text-foreground transition-colors"
                 >
@@ -71,7 +90,7 @@ const Footer = () => {
                 </button>
               </li>
               <li>
-                <button 
+                <button
                   onClick={() => handleLinkClick('Case Studies')}
                   className="text-base text-muted-foreground hover:text-foreground transition-colors"
                 >
@@ -79,7 +98,7 @@ const Footer = () => {
                 </button>
               </li>
               <li>
-                <button 
+                <button
                   onClick={() => handleLinkClick('Process')}
                   className="text-base text-muted-foreground hover:text-foreground transition-colors"
                 >
@@ -87,7 +106,7 @@ const Footer = () => {
                 </button>
               </li>
               <li>
-                <button 
+                <button
                   onClick={() => scrollToSection('features')}
                   className="text-base text-muted-foreground hover:text-foreground transition-colors"
                 >
@@ -101,7 +120,7 @@ const Footer = () => {
             <h4 className="text-base font-display font-semibold mb-4">Company</h4>
             <ul className="space-y-3">
               <li>
-                <button 
+                <button
                   onClick={() => handleLinkClick('About Us')}
                   className="text-base text-muted-foreground hover:text-foreground transition-colors"
                 >
@@ -109,7 +128,7 @@ const Footer = () => {
                 </button>
               </li>
               <li>
-                <button 
+                <button
                   onClick={() => handleLinkClick('Careers')}
                   className="text-base text-muted-foreground hover:text-foreground transition-colors"
                 >
@@ -117,7 +136,7 @@ const Footer = () => {
                 </button>
               </li>
               <li>
-                <button 
+                <button
                   onClick={() => scrollToSection('pricing')}
                   className="text-base text-muted-foreground hover:text-foreground transition-colors"
                 >
@@ -125,7 +144,7 @@ const Footer = () => {
                 </button>
               </li>
               <li>
-                <button 
+                <button
                   onClick={() => handleLinkClick('Contact')}
                   className="text-base text-muted-foreground hover:text-foreground transition-colors"
                 >
@@ -139,43 +158,35 @@ const Footer = () => {
         {/* Bottom */}
         <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-border/50">
           <p className="text-base text-muted-foreground mb-4 md:mb-0">
-            © 2024 Heptact. Crafted with precision.
+            © 2024 Heptact. All rights reserved.
           </p>
-          
-          {/* Social Links */}
-          <div className="flex items-center gap-4">
-            <motion.button
-              onClick={() => handleSocialClick('GitHub')}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              className="p-2 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
+
+          {/* Social Links - Text based */}
+          <div className="flex items-center gap-6">
+            <button
+              onClick={() => handleSocialClick('GitHub', 'https://github.com/heptact')}
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
-              <Github className="w-5 h-5" />
-            </motion.button>
-            <motion.button
-              onClick={() => handleSocialClick('Twitter')}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              className="p-2 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
+              GitHub
+            </button>
+            <button
+              onClick={() => handleSocialClick('Twitter', 'https://twitter.com/heptact')}
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
-              <Twitter className="w-5 h-5" />
-            </motion.button>
-            <motion.button
-              onClick={() => handleSocialClick('LinkedIn')}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              className="p-2 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
+              Twitter
+            </button>
+            <button
+              onClick={() => handleSocialClick('LinkedIn', 'https://linkedin.com/company/heptact')}
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
-              <Linkedin className="w-5 h-5" />
-            </motion.button>
-            <motion.button
-              onClick={() => handleSocialClick('Email')}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              className="p-2 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
+              LinkedIn
+            </button>
+            <a
+              href="mailto:hello@heptact.com"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
-              <Mail className="w-5 h-5" />
-            </motion.button>
+              Email
+            </a>
           </div>
         </div>
       </div>
