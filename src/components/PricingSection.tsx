@@ -1,61 +1,72 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { Check, Sparkles, ArrowRight, Zap, Star, Crown } from 'lucide-react';
+import { Check, ArrowRight, Sparkles, Info } from 'lucide-react';
 
 const pricingPlans = [
   {
-    name: 'Starter',
-    description: 'Perfect for small projects and MVPs',
-    originalPrice: 199,
+    name: 'Starter Kit',
+    description: 'Perfect for testing gesture technology on your site',
     price: 20,
-    discount: '90% OFF',
+    priceNote: 'one-time',
     popular: false,
-    features: [
-      'Single gesture integration',
+    deliverables: [
+      'Single gesture type (e.g., rotate OR zoom)',
       '1 interactive 3D element',
-      '48-hour delivery',
-      'Basic documentation',
-      '7-day support',
+      'Webcam hand tracking integration',
+      'Mobile touch fallback included',
     ],
+    requirements: [
+      'Your existing website URL',
+      '3D model file (optional, we can provide)',
+    ],
+    timeline: '48-72 hours',
     cta: 'Get Started',
   },
   {
     name: 'Professional',
-    description: 'For growing businesses and brands',
-    originalPrice: 499,
+    description: 'Full gesture experience for product showcases & demos',
     price: 99,
-    discount: '80% OFF',
+    priceNote: 'per project',
     popular: true,
-    features: [
-      'Up to 5 gesture integrations',
+    deliverables: [
+      'Up to 5 gesture types (rotate, zoom, swipe, pinch, pan)',
       '3 interactive 3D elements',
-      '30-hour delivery',
-      'Full documentation',
-      '30-day support',
-      'Source code included',
-      'Custom branding',
+      'Hand tracking: click, scroll, navigate',
+      'Cross-browser + mobile responsive',
+      'Custom branding & styling',
+      'Full source code ownership',
     ],
+    requirements: [
+      'Design brief or reference',
+      'Brand assets (logo, colors)',
+      '3D models or product images',
+    ],
+    timeline: '3-5 days',
     cta: 'Most Popular',
   },
   {
     name: 'Enterprise',
-    description: 'Complete gesture experience suite',
-    originalPrice: 999,
+    description: 'White-label gesture solutions for agencies & brands',
     price: 249,
-    discount: '75% OFF',
+    priceNote: 'starting from',
     popular: false,
-    features: [
+    deliverables: [
       'Unlimited gesture integrations',
       'Unlimited 3D elements',
-      'Priority 24-hour delivery',
-      'Full documentation + training',
-      'Lifetime support',
-      'Source code + ownership',
+      'Custom gesture mapping',
+      'Analytics dashboard integration',
       'White-label solution',
-      'Dedicated account manager',
+      'Full documentation + training',
+      'Dedicated Slack/Discord support',
+      'Priority 24-hour delivery option',
     ],
-    cta: 'Contact Us',
+    requirements: [
+      'Discovery call to scope project',
+      'Access to your dev environment',
+    ],
+    timeline: 'Custom timeline',
+    cta: 'Let\'s Talk',
   },
 ];
 
@@ -82,111 +93,138 @@ const PricingSection = () => {
           className="text-center mb-16"
         >
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 border border-black/10 rounded px-4 py-2 mb-8 bg-black/[0.02]">
+          <div className="inline-flex items-center gap-2 border border-black/10 rounded-full px-5 py-2 mb-8 bg-black/[0.02]">
+            <Sparkles className="w-3 h-3 text-black/50" />
             <span className="text-xs uppercase tracking-[0.2em] text-black/50">
               Launch Pricing
             </span>
           </div>
 
-          <h2 className="text-5xl md:text-6xl lg:text-7xl font-display font-bold mb-6 leading-[1.1] text-black">
-            Insane <span className="text-black/30">Discounts</span>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-6 leading-[1.1] text-black">
+            Simple, <span className="text-black/30">Transparent</span> Pricing
           </h2>
 
-          <p className="text-lg md:text-xl text-black/50 max-w-2xl mx-auto leading-relaxed">
-            Limited time launch offer. Get premium gesture experiences at a fraction of the cost.
+          <p className="text-lg md:text-xl text-black/60 max-w-2xl mx-auto leading-relaxed">
+            No hidden fees. Know exactly what you're getting and what we need from you to start.
           </p>
         </motion.div>
 
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
           {pricingPlans.map((plan, index) => (
             <motion.div
               key={plan.name}
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.2 + index * 0.1, duration: 0.6 }}
-              className={`relative rounded p-8 ${plan.popular
-                ? 'bg-black text-white border-2 border-black scale-105 shadow-2xl'
+              className={`relative rounded-xl ${plan.popular
+                ? 'bg-black text-white border-2 border-black lg:scale-105 shadow-2xl z-10'
                 : 'bg-white text-black border border-black/10'
                 }`}
             >
               {/* Popular badge */}
               {plan.popular && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                  <div className="flex items-center gap-1 bg-white text-black px-4 py-1 rounded text-xs uppercase tracking-wider">
-                    Most Popular
+                  <div className="flex items-center gap-1 bg-white text-black px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider shadow-lg">
+                    Recommended
                   </div>
                 </div>
               )}
 
-              {/* Discount badge */}
-              <div className={`inline-flex items-center gap-1 rounded px-3 py-1 text-xs font-bold mb-4 ${plan.popular ? 'bg-white/20 text-white' : 'bg-red-500 text-white'
-                }`}>
-                {plan.discount}
+              <div className="p-8">
+                {/* Header */}
+                <h3 className="text-xl font-display font-bold mb-2">{plan.name}</h3>
+                <p className={`text-sm mb-6 ${plan.popular ? 'text-white/60' : 'text-black/50'}`}>
+                  {plan.description}
+                </p>
+
+                {/* Price */}
+                <div className="flex items-baseline gap-2 mb-2">
+                  <span className="text-4xl font-display font-bold">${plan.price}</span>
+                  <span className={`text-sm ${plan.popular ? 'text-white/60' : 'text-black/50'}`}>
+                    {plan.priceNote}
+                  </span>
+                </div>
+
+                {/* Timeline */}
+                <div className={`text-xs font-mono uppercase tracking-wider mb-8 ${plan.popular ? 'text-white/40' : 'text-black/40'}`}>
+                  Delivery: {plan.timeline}
+                </div>
+
+                {/* Deliverables */}
+                <div className="mb-6">
+                  <h4 className={`text-xs font-mono uppercase tracking-wider mb-4 ${plan.popular ? 'text-white/50' : 'text-black/40'}`}>
+                    What You Get
+                  </h4>
+                  <ul className="space-y-3">
+                    {plan.deliverables.map((item) => (
+                      <li key={item} className="flex items-start gap-3">
+                        <Check className={`w-4 h-4 mt-0.5 flex-shrink-0 ${plan.popular ? 'text-green-400' : 'text-green-600'}`} />
+                        <span className={`text-sm leading-snug ${plan.popular ? 'text-white/80' : 'text-black/70'}`}>
+                          {item}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Requirements */}
+                <div className="mb-8">
+                  <h4 className={`text-xs font-mono uppercase tracking-wider mb-3 flex items-center gap-2 ${plan.popular ? 'text-white/50' : 'text-black/40'}`}>
+                    <Info className="w-3 h-3" />
+                    What We Need From You
+                  </h4>
+                  <ul className="space-y-2">
+                    {plan.requirements.map((item) => (
+                      <li key={item} className={`text-xs ${plan.popular ? 'text-white/50' : 'text-black/50'}`}>
+                        • {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* CTA */}
+                <Button
+                  variant={plan.popular ? 'secondary' : 'default'}
+                  size="lg"
+                  onClick={handleGetInTouch}
+                  className={`w-full group rounded-lg ${plan.popular
+                    ? 'bg-white text-black hover:bg-white/90'
+                    : 'bg-black text-white hover:bg-black/90'
+                    }`}
+                >
+                  {plan.cta}
+                  <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                </Button>
               </div>
-
-              <h3 className="text-2xl font-display font-bold mb-2">{plan.name}</h3>
-              <p className={`text-sm mb-6 ${plan.popular ? 'text-white/60' : 'text-black/50'}`}>
-                {plan.description}
-              </p>
-
-              {/* Price */}
-              <div className="flex items-baseline gap-2 mb-6">
-                <span className={`text-lg line-through ${plan.popular ? 'text-white/40' : 'text-black/30'}`}>
-                  ${plan.originalPrice}
-                </span>
-                <span className="text-5xl font-display font-bold">${plan.price}</span>
-                <span className={`text-sm ${plan.popular ? 'text-white/60' : 'text-black/50'}`}>
-                  /project
-                </span>
-              </div>
-
-              {/* Features */}
-              <ul className="space-y-3 mb-8">
-                {plan.features.map((feature) => (
-                  <li key={feature} className="flex items-start gap-3">
-                    <Check className={`w-5 h-5 mt-0.5 ${plan.popular ? 'text-white' : 'text-black'}`} />
-                    <span className={`text-sm ${plan.popular ? 'text-white/80' : 'text-black/70'}`}>
-                      {feature}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-
-              {/* CTA */}
-              <Button
-                variant={plan.popular ? 'secondary' : 'default'}
-                size="lg"
-                onClick={handleGetInTouch}
-                className={`w-full group rounded ${plan.popular
-                  ? 'bg-white text-black hover:bg-white/90'
-                  : 'bg-black text-white hover:bg-black/90'
-                  }`}
-              >
-                {plan.cta}
-              </Button>
             </motion.div>
           ))}
         </div>
 
-        {/* Bottom CTA */}
+        {/* Bottom Note */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : {}}
           transition={{ delay: 0.8 }}
-          className="text-center mt-16"
+          className="text-center mt-16 max-w-2xl mx-auto"
         >
-          <p className="text-black/50 text-sm mb-4">
-            Need a custom solution? Let's talk.
-          </p>
-          <Button
-            variant="outline"
-            size="lg"
-            onClick={handleGetInTouch}
-            className="rounded border-black/20 text-black hover:bg-black hover:text-white"
-          >
-            Get Custom Quote
-          </Button>
+          <div className="border border-black/10 rounded-xl p-6 bg-black/[0.02]">
+            <h4 className="text-lg font-display font-semibold text-black mb-2">
+              Need something custom?
+            </h4>
+            <p className="text-sm text-black/50 mb-4">
+              We build bespoke gesture experiences for brands with specific requirements.
+              Complex integrations, custom gestures, or ongoing partnerships—let's scope it together.
+            </p>
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={handleGetInTouch}
+              className="rounded-lg border-black/20 text-black hover:bg-black hover:text-white"
+            >
+              Get Custom Quote
+            </Button>
+          </div>
         </motion.div>
       </div>
     </section>

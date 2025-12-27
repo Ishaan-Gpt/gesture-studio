@@ -119,13 +119,13 @@ const BentoCard = ({
           </h3>
 
           {/* Description */}
-          <p className="text-sm text-white/50 leading-relaxed mb-auto group-hover:text-white/60 transition-colors">
+          <p className="text-sm text-white/60 leading-relaxed mb-auto group-hover:text-white/70 transition-colors">
             {useCase.description}
           </p>
 
           {/* Stats footer */}
           <div className="flex items-center justify-between mt-6 pt-4 border-t border-white/10 group-hover:border-white/20 transition-colors">
-            <span className="text-xs font-mono text-white/40 uppercase tracking-wider group-hover:text-white/60 transition-colors">
+            <span className="text-xs font-mono text-white/50 uppercase tracking-wider group-hover:text-white/70 transition-colors">
               {useCase.stats}
             </span>
             <motion.div
@@ -238,7 +238,7 @@ const UseCasesSection = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: 0.4, duration: 0.6 }}
-            className="text-lg text-white/50 max-w-2xl mx-auto"
+            className="text-lg text-white/60 max-w-2xl mx-auto"
           >
             Gesture control, 3D experiences, and interactive showpieces
           </motion.p>

@@ -87,12 +87,14 @@ const VisionSection = () => {
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-4 text-white">
             Concept to <span className="text-white/40">Component</span>
           </h2>
-          <p className="text-lg text-white/50 max-w-2xl mx-auto mb-2">
+          <p className="text-lg text-white/60 max-w-2xl mx-auto mb-3">
             Click nodes to explore our development process
           </p>
-          <p className="text-xs text-white/30 font-mono">
-            Interactive • Auto-Rotating Timeline
-          </p>
+          {/* Clear interaction hint */}
+          <div className="inline-flex items-center gap-2 text-xs text-white/40 bg-white/5 border border-white/10 rounded-full px-4 py-1.5">
+            <span className="w-1.5 h-1.5 bg-green-400/60 rounded-full animate-pulse" />
+            <span>Click any node to see details • Auto-rotating</span>
+          </div>
         </motion.div>
       </div>
 

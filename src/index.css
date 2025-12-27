@@ -31,17 +31,22 @@
 
 @layer base {
   :root {
-    /* DEEP GLOSSY BLACK THEME */
-    --background: 0 0% 1.5%;
-    /* Richest Deep Black */
+    /* SOFT CHARCOAL THEME - Better contrast */
+    --background: 0 0% 3.5%;
+    /* Lifted from pure black for better readability */
     --foreground: 0 0% 100%;
 
-    /* ... (rest of tokens) */
-    --card: 0 0% 4%;
+    /* Improved contrast tokens */
+    --card: 0 0% 6%;
     --card-foreground: 0 0% 100%;
 
-    --glass-bg: hsla(0, 0%, 3%, 0.85);
-    --glass-border: hsla(0, 0%, 100%, 0.1);
+    --glass-bg: hsla(0, 0%, 5%, 0.9);
+    --glass-border: hsla(0, 0%, 100%, 0.12);
+
+    /* Text contrast levels - use these for body text */
+    --text-primary: 0 0% 95%;
+    --text-secondary: 0 0% 70%;
+    --text-muted: 0 0% 55%;
   }
 }
 
@@ -52,13 +57,13 @@
 
   html {
     scroll-behavior: smooth;
-    background: radial-gradient(circle at center, #0a0a0a 0%, #000000 100%);
+    background: radial-gradient(circle at center, #0d0d0d 0%, #090909 100%);
     background-attachment: fixed;
   }
 
   body {
     @apply text-foreground antialiased;
-    background: radial-gradient(circle at 50% -20%, #111111 0%, #000000 80%);
+    background: radial-gradient(circle at 50% -20%, #141414 0%, #090909 80%);
     background-attachment: fixed;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     min-height: 100vh;

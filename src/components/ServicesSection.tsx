@@ -188,7 +188,7 @@ const ServiceCard = ({ service, index }: { service: typeof services[0]; index: n
                             <div className="p-3 rounded-xl bg-white/5 border border-white/10">
                                 <Icon className="w-6 h-6 text-white" />
                             </div>
-                            <span className="text-xs font-mono uppercase tracking-[0.3em] text-white/40">
+                            <span className="text-xs font-mono uppercase tracking-[0.3em] text-white/50">
                                 Service 0{service.id}
                             </span>
                         </div>
@@ -200,7 +200,7 @@ const ServiceCard = ({ service, index }: { service: typeof services[0]; index: n
                             {service.subtitle}
                         </h3>
 
-                        <p className="text-lg text-white/60 leading-relaxed mb-10 max-w-lg">
+                        <p className="text-lg text-white/70 leading-relaxed mb-10 max-w-lg">
                             {service.description}
                         </p>
 
@@ -217,7 +217,7 @@ const ServiceCard = ({ service, index }: { service: typeof services[0]; index: n
                                     <div className="w-5 h-5 flex items-center justify-center">
                                         <Check className="w-3 h-3 text-white/60" />
                                     </div>
-                                    <span className="text-sm font-mono text-white/70">{feature}</span>
+                                    <span className="text-sm font-mono text-white/80">{feature}</span>
                                 </motion.div>
                             ))}
                         </div>
@@ -306,14 +306,14 @@ const ServicesSection = () => {
                     transition={{ duration: 0.6 }}
                     className="text-center"
                 >
-                    <span className="text-sm uppercase tracking-[0.3em] text-white/40 mb-6 block">
+                    <span className="text-sm uppercase tracking-[0.3em] text-white/50 mb-6 block">
                         What We Do
                     </span>
 
                     <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-4 text-white">
                         Our <span className="text-white/40">Services</span>
                     </h2>
-                    <p className="text-lg text-white/50 max-w-2xl mx-auto">
+                    <p className="text-lg text-white/60 max-w-2xl mx-auto">
                         Four ways to bring gesture control to your digital experience
                     </p>
                 </motion.div>

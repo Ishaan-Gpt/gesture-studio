@@ -65,8 +65,8 @@ const HeroSection = () => {
                     </span>
                 </h1>
 
-                {/* Subtext - faded */}
-                <p className="text-sm md:text-base leading-relaxed text-white/35 mb-10 max-w-sm">
+                {/* Subtext - improved contrast */}
+                <p className="text-sm md:text-base leading-relaxed text-white/55 mb-10 max-w-sm">
                     We design gesture-controlled 3D experiences
                     that let your users navigate screens
                     without ever touching them.

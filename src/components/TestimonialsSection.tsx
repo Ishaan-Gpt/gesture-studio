@@ -81,10 +81,10 @@ const TestimonialCard = ({
                     <figcaption className="text-sm font-semibold text-black">
                         {name}
                     </figcaption>
-                    <p className="text-[10px] font-mono text-black/40 uppercase tracking-wider">{role}</p>
+                    <p className="text-[10px] font-mono text-black/50 uppercase tracking-wider">{role}</p>
                 </div>
             </div>
-            <blockquote className="text-sm text-black/70 leading-relaxed">
+            <blockquote className="text-sm text-black/80 leading-relaxed">
                 "{body}"
             </blockquote>
         </figure>
@@ -118,7 +118,7 @@ export function TestimonialsSection() {
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-black opacity-75"></span>
                             <span className="relative inline-flex rounded-full h-2 w-2 bg-black"></span>
                         </span>
-                        <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-black/50">
+                        <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-black/60">
                             Testimonials
                         </span>
                     </div>
@@ -126,7 +126,7 @@ export function TestimonialsSection() {
                     <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-4 text-black">
                         Loved by <span className="text-black/30">Innovators</span>
                     </h2>
-                    <p className="text-lg text-black/50">
+                    <p className="text-lg text-black/60">
                         See what our clients say about their gesture experiences
                     </p>
                 </motion.div>

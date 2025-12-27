@@ -12,6 +12,7 @@ import ServicesSection from '@/components/ServicesSection';
 import UseCasesSection from '@/components/UseCasesSection';
 import DraggableShowcase from '@/components/DraggableShowcase';
 import TestimonialsSection from '@/components/TestimonialsSection';
+import CaseStudySection from '@/components/CaseStudySection';
 import PricingSection from '@/components/PricingSection';
 import ContactSection from '@/components/ContactSection';
 import Footer from '@/components/Footer';
@@ -66,6 +67,7 @@ const Index = () => {
           <DraggableShowcase />
           <UseCasesSection />
           <TestimonialsSection />
+          <CaseStudySection />
           <PricingSection />
           <ContactSection />
           <Footer />

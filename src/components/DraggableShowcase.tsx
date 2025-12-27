@@ -338,12 +338,17 @@ export function DraggableShowcase() {
                     <h2 className="text-5xl md:text-6xl lg:text-7xl font-display font-bold mb-6 text-white leading-tight">
                         Problems We <span className="text-white/30 italic">Solve.</span>
                     </h2>
-                    <p className="text-xl text-white/40 max-w-2xl mx-auto font-light tracking-wide">
+                    <p className="text-xl text-white/60 max-w-2xl mx-auto font-light tracking-wide mb-4">
                         {isEnabled
                             ? "Navigate the future with hand gestures • Click to flip cards"
                             : "Click and drag to explore • Click to reveal the transformation"
                         }
                     </p>
+                    {/* Clear interaction hint */}
+                    <div className="inline-flex items-center gap-3 text-sm text-white/40 bg-white/5 border border-white/10 rounded-full px-5 py-2">
+                        <span className="w-2 h-2 bg-green-400/60 rounded-full animate-pulse" />
+                        <span>Tap any card to flip • Drag cards to rearrange</span>
+                    </div>
                 </motion.div>
             </div>
 
